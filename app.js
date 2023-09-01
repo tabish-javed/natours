@@ -2,19 +2,6 @@ const fs = require('node:fs/promises');
 const express = require('express');
 const app = express();
 
-/*
-app.get('/', (request, response) => {
-    response
-        .status(200)
-        .json({ message: 'Hello from the server side!', app: 'Natorurs' });
-});
-
-app.post('/', (request, response) => {
-    response
-        .status(200)
-        .send('You can post to this endpoint...');
-});
-*/
 
 // function to read file from disk
 async function readJSONFile () {
@@ -27,11 +14,10 @@ async function writeJSONFile (data) {
 }
 
 
-// middleware to include request's body to be used by other routes
-app.use(express.json());
+// HANDLERS ----------------------
 
-// this is the primary request handler for get specific route
-app.get('/api/v1/tours', async (request, response) => {
+// get all tours ----
+async function getAllTours (request, response) {
     const tours = await readJSONFile();
     response.status(200).json({
         status: 'success',
@@ -40,11 +26,10 @@ app.get('/api/v1/tours', async (request, response) => {
             tours: tours
         }
     });
-});
+}
 
-
-// this route handles request/url parameters such as; /api/v1/tours/7
-app.get('/api/v1/tours/:id', async (request, response) => {
+// get one tour ----
+async function getTour (request, response) {
     const tours = await readJSONFile();
     const tour = tours.find(element => +element.id === +request.params.id); // request.params will bring URL params
 
@@ -62,11 +47,10 @@ app.get('/api/v1/tours/:id', async (request, response) => {
             tour: tour
         }
     });
-});
+}
 
-
-// this handler works for post requests
-app.post('/api/v1/tours', async (request, response) => {
+// create tour ----
+async function createTour (request, response) {
     const tours = await readJSONFile();
     const newID = tours[tours.length - 1].id + 1;
     const newTour = Object.assign({ id: newID }, request.body);
@@ -79,11 +63,10 @@ app.post('/api/v1/tours', async (request, response) => {
             tour: newTour
         }
     });
-});
+}
 
-
-// this handler will update data - TODO - implement actual update instead of just a response
-app.patch('/api/v1/tours/:id', async (request, response) => {
+// update tour ----
+async function updateTour (request, response) {
     const tours = await readJSONFile();
     if (+request.params.id > tours.length) {
         return response.status(404).json({
@@ -98,11 +81,10 @@ app.patch('/api/v1/tours/:id', async (request, response) => {
             tour: `Tour ID: ${request.params.id} updated!`
         }
     });
-});
+}
 
-
-// delete handler
-app.delete('/api/v1/tours/:id', async (request, response) => {
+// delete tour ----
+async function deleteTour (request, response) {
     const tours = await readJSONFile();
     if (+request.params.id > tours.length) {
         return response.status(404).json({
@@ -117,8 +99,42 @@ app.delete('/api/v1/tours/:id', async (request, response) => {
             tour: null
         }
     });
-});
+}
 
+
+// ALL BELOW SEPARATE ROUTES FOR GET, POST, PATCH AND DELETE ARE TURNED INTO APP.ROUTE
+/*
+// this is the primary request handler for get specific route
+app.get('/api/v1/tours', getAllTours);
+
+// this route handles request/url parameters such as; /api/v1/tours/7
+app.get('/api/v1/tours/:id', getTour);
+
+// this handler works for post requests
+app.post('/api/v1/tours', createTour);
+
+// this handler will update data - TODO - implement actual update instead of just a response
+app.patch('/api/v1/tours/:id', updateTour);
+
+// delete handler
+app.delete('/api/v1/tours/:id', deleteTour);
+ */
+// ALL ABOVE SEPARATE ROUTES FOR GET, POST, PATCH AND DELETE ARE TURNED INTO APP.ROUTE
+
+
+// middleware to include request's body to be used by other routes
+app.use(express.json());
+
+
+app
+    .route('/api/v1/tours')
+    .get(getAllTours)
+    .post(createTour);
+
+app.route('/api/v1/tours/:id')
+    .get(getTour)
+    .patch(updateTour)
+    .delete(deleteTour);
 
 // app startup
 const port = 3000;
