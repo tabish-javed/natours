@@ -46,7 +46,7 @@ app.get('/api/v1/tours', async (request, response) => {
 // this route handles request/url parameters such as; /api/v1/tours/7
 app.get('/api/v1/tours/:id', async (request, response) => {
     const tours = await readJSONFile();
-    const tour = tours.find(element => +element.id === +request.params.id);
+    const tour = tours.find(element => +element.id === +request.params.id); // request.params will bring URL params
 
     if (!tour) {
         return response.status(404).json({
@@ -77,6 +77,25 @@ app.post('/api/v1/tours', async (request, response) => {
         status: 'success',
         data: {
             tour: newTour
+        }
+    });
+});
+
+
+// this handler will update data - TODO - implement actual update instead of just a response
+app.patch('/api/v1/tours/:id', async (request, response) => {
+    const tours = await readJSONFile();
+    if (+request.params.id > tours.length) {
+        return response.status(404).json({
+            status: 'failure',
+            message: `Unable to find the tour with ID: ${request.params.id}`
+        });
+    }
+
+    response.status(200).json({
+        status: 'success',
+        data: {
+            tour: `Tour ID: ${request.params.id} updated!`
         }
     });
 });
