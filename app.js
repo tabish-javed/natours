@@ -16,18 +16,21 @@ app.post('/', (request, response) => {
 });
 */
 
+// function to read file from disk
 async function readJSONFile () {
     return await JSON.parse(await fs.readFile(`${__dirname}/dev-data/data/tours-simple.json`));
 }
 
+// function to write file to disk
 async function writeJSONFile (data) {
     await fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(data, null, 4));
 }
 
 
-
+// middleware to include request's body to be used by other routes
 app.use(express.json());
 
+// this is the primary request handler for get specific route
 app.get('/api/v1/tours', async (request, response) => {
     const tours = await readJSONFile();
     response.status(200).json({
@@ -40,6 +43,29 @@ app.get('/api/v1/tours', async (request, response) => {
 });
 
 
+// this route handles request/url parameters such as; /api/v1/tours/7
+app.get('/api/v1/tours/:id', async (request, response) => {
+    const tours = await readJSONFile();
+    const tour = tours.find(element => +element.id === +request.params.id);
+
+    if (!tour) {
+        return response.status(404).json({
+            status: 'failure',
+            message: `Unable to find the tour with ID: ${request.params.id}`
+        });
+    }
+
+    response.status(200).json({
+        status: 'success',
+        results: tour.length,
+        data: {
+            tour: tour
+        }
+    });
+});
+
+
+// this handler works for post requests
 app.post('/api/v1/tours', async (request, response) => {
     const tours = await readJSONFile();
     const newID = tours[tours.length - 1].id + 1;
@@ -56,6 +82,7 @@ app.post('/api/v1/tours', async (request, response) => {
 });
 
 
+// app startup
 const port = 3000;
 app.listen(port, () => {
     console.log(`App started on port ${port}`);
