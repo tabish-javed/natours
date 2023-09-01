@@ -18,9 +18,12 @@ async function writeJSONFile (data) {
 
 // get all tours ----
 async function getAllTours (request, response) {
+    console.log(request.requestTime);
+
     const tours = await readJSONFile();
     response.status(200).json({
         status: 'success',
+        requestedAt: request.requestTime,
         results: tours.length,
         data: {
             tours: tours
@@ -122,19 +125,33 @@ app.delete('/api/v1/tours/:id', deleteTour);
 // ALL ABOVE SEPARATE ROUTES FOR GET, POST, PATCH AND DELETE ARE TURNED INTO APP.ROUTE
 
 
-// middleware to include request's body to be used by other routes
+// middleware  - to include jason.parse()ed JS-Object in request's body
+// to be used by other routes
 app.use(express.json());
 
 
-app
-    .route('/api/v1/tours')
-    .get(getAllTours)
-    .post(createTour);
+// middleware 1 - custom
+app.use((request, response, next) => {
+    console.log('Hello from the middleware');
+    next();
+});
 
-app.route('/api/v1/tours/:id')
+// middleware 2 - custom
+app.use((request, response, next) => {
+    request.requestTime = new Date().toISOString();
+    next();
+});
+
+
+// custom routes for each type of request
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
+
+app
+    .route('/api/v1/tours/:id')
     .get(getTour)
     .patch(updateTour)
     .delete(deleteTour);
+
 
 // app startup
 const port = 3000;
