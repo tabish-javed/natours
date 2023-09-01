@@ -101,6 +101,25 @@ app.patch('/api/v1/tours/:id', async (request, response) => {
 });
 
 
+// delete handler
+app.delete('/api/v1/tours/:id', async (request, response) => {
+    const tours = await readJSONFile();
+    if (+request.params.id > tours.length) {
+        return response.status(404).json({
+            status: 'failure',
+            message: `Unable to find the tour with ID: ${request.params.id}`
+        });
+    }
+
+    response.status(204).json({
+        status: 'success',
+        data: {
+            tour: null
+        }
+    });
+});
+
+
 // app startup
 const port = 3000;
 app.listen(port, () => {
