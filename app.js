@@ -9,8 +9,10 @@ const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
-// third-party middleware to enable logging
-app.use(morgan('dev'));
+// third-party middleware to enable logging (only in development environment)
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 
 // express middleware  - to receive jason.parse()ed JS-Object from request's body (which is in JSON)
 app.use(express.json());
