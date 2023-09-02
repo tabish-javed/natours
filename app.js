@@ -1,7 +1,14 @@
+// INTERNAL
 const fs = require('node:fs/promises');
+// EXTERNAL
 const express = require('express');
-const app = express();
+// CUSTOM
+const morgan = require('morgan');
 
+
+
+
+const app = express();
 
 // function to read file from disk
 async function readJSONFile () {
@@ -14,12 +21,10 @@ async function writeJSONFile (data) {
 }
 
 
-// HANDLERS ----------------------
+// TOURS CONTROLLERS ----------------------
 
 // get all tours ----
 async function getAllTours (request, response) {
-    console.log(request.requestTime);
-
     const tours = await readJSONFile();
     response.status(200).json({
         status: 'success',
@@ -124,15 +129,16 @@ app.delete('/api/v1/tours/:id', deleteTour);
  */
 // ALL ABOVE SEPARATE ROUTES FOR GET, POST, PATCH AND DELETE ARE TURNED INTO APP.ROUTE
 
+// third-party middleware to enable logging
+app.use(morgan('dev'));
 
-// middleware  - to include jason.parse()ed JS-Object in request's body
-// to be used by other routes
+// express middleware  - to receive jason.parse()ed JS-Object from request's body (which is in JSON)
 app.use(express.json());
 
 
 // middleware 1 - custom
 app.use((request, response, next) => {
-    console.log('Hello from the middleware');
+    console.log(`${request.hostname}`);
     next();
 });
 
