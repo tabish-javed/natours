@@ -1,0 +1,18 @@
+// ALL BELOW SEPARATE ROUTES FOR GET, POST, PATCH AND DELETE ARE TURNED INTO APP.ROUTE
+/*
+// this is the primary request handler for get specific route
+app.get('/api/v1/tours', getAllTours);
+
+// this route handles request/url parameters such as; /api/v1/tours/7
+app.get('/api/v1/tours/:id', getTour);
+
+// this handler works for post requests
+app.post('/api/v1/tours', createTour);
+
+// this handler will update data - TODO - implement actual update instead of just a response
+app.patch('/api/v1/tours/:id', updateTour);
+
+// delete handler
+app.delete('/api/v1/tours/:id', deleteTour);
+ */
+// ALL ABOVE SEPARATE ROUTES FOR GET, POST, PATCH AND DELETE ARE TURNED INTO APP.ROUTE
