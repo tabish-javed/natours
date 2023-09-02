@@ -12,6 +12,20 @@ async function writeJSONFile (data) {
 
 
 // TOURS CONTROLLERS ----------------------
+
+async function checkID (request, response, next, value) {
+    console.log(`Tour id is: ${value}`);
+    const tours = await readJSONFile();
+    if (+request.params.id > tours.length) {
+        return response.status(404).json({
+            status: 'failure',
+            message: `Unable to find the tour with ID: ${request.params.id}`
+        });
+    }
+    next();
+}
+
+
 // get all tours ----
 async function getAllTours (request, response) {
     const tours = await readJSONFile();
@@ -29,13 +43,6 @@ async function getAllTours (request, response) {
 async function getTour (request, response) {
     const tours = await readJSONFile();
     const tour = tours.find(element => +element.id === +request.params.id); // request.params will bring URL params
-
-    if (!tour) {
-        return response.status(404).json({
-            status: 'failure',
-            message: `Unable to find the tour with ID: ${request.params.id}`
-        });
-    }
 
     response.status(200).json({
         status: 'success',
@@ -64,14 +71,6 @@ async function createTour (request, response) {
 
 // update tour ----
 async function updateTour (request, response) {
-    const tours = await readJSONFile();
-    if (+request.params.id > tours.length) {
-        return response.status(404).json({
-            status: 'failure',
-            message: `Unable to find the tour with ID: ${request.params.id}`
-        });
-    }
-
     response.status(200).json({
         status: 'success',
         data: {
@@ -82,14 +81,6 @@ async function updateTour (request, response) {
 
 // delete tour ----
 async function deleteTour (request, response) {
-    const tours = await readJSONFile();
-    if (+request.params.id > tours.length) {
-        return response.status(404).json({
-            status: 'failure',
-            message: `Unable to find the tour with ID: ${request.params.id}`
-        });
-    }
-
     response.status(204).json({
         status: 'success',
         data: {
@@ -100,6 +91,7 @@ async function deleteTour (request, response) {
 
 
 module.exports = {
+    checkID: checkID,
     getAllTours: getAllTours,
     getTour: getTour,
     createTour: createTour,

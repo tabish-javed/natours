@@ -4,8 +4,7 @@
     "description": "Building API using Node, Express and MongoDB",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon server.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "nodemon server.js"
     },
     "author": "tabish javed",
     "license": "ISC",
