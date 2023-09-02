@@ -1,4 +1,4 @@
 dev-data/
 node_modules/
 package-lock.*
-starter_node_code.txt
+.eslintrc.json
