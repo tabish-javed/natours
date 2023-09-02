@@ -15,10 +15,12 @@ app.use(morgan('dev'));
 // express middleware  - to receive jason.parse()ed JS-Object from request's body (which is in JSON)
 app.use(express.json());
 
+// middleware for public files
+app.use(express.static(`${__dirname}/public`));
 
 // middleware 1 - custom
 app.use((request, response, next) => {
-    console.log(`${request.hostname}`);
+    // console.log(`${request.hostname}`);
     next();
 });
 

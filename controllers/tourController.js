@@ -11,8 +11,7 @@ async function writeJSONFile (data) {
 }
 
 
-// TOURS CONTROLLERS ----------------------
-
+// MIDDLEWARE BELOW -----------------------------
 async function checkID (request, response, next, value) {
     console.log(`Tour id is: ${value}`);
     const tours = await readJSONFile();
@@ -25,7 +24,18 @@ async function checkID (request, response, next, value) {
     next();
 }
 
+function checkBody (request, response, next) {
+    if (!request.body.name || !request.body.price) {
+        return response.status(400).json({
+            status: 'failure',
+            message: 'Missing name or price.'
+        });
+    }
+    next();
+}
+// MIDDLEWARE ABOVE -----------------------------
 
+// TOURS CONTROLLERS ----------------------
 // get all tours ----
 async function getAllTours (request, response) {
     const tours = await readJSONFile();
@@ -92,6 +102,7 @@ async function deleteTour (request, response) {
 
 module.exports = {
     checkID: checkID,
+    checkBody: checkBody,
     getAllTours: getAllTours,
     getTour: getTour,
     createTour: createTour,
