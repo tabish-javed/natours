@@ -94,7 +94,7 @@ async function updateTour (request, response) {
         response.status(200).json({
             status: 'success',
             data: {
-                tour: `Tour ID: ${request.params.id} updated!`
+                tour: tour
             }
         });
     } catch (error) {
@@ -108,12 +108,20 @@ async function updateTour (request, response) {
 
 // delete tour ----
 async function deleteTour (request, response) {
-    response.status(204).json({
-        status: 'success',
-        data: {
-            tour: null
-        }
-    });
+    try {
+        await Tour.findByIdAndDelete(request.params.id);
+        response.status(204).json({
+            status: 'success',
+            data: {
+                tour: null
+            }
+        });
+    } catch (error) {
+        response.status(404).json({
+            status: 'failed',
+            message: error
+        });
+    }
 }
 
 

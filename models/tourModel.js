@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 
 
+// define schema
 const tourSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -18,6 +19,8 @@ const tourSchema = new mongoose.Schema({
     }
 });
 
+
+// create model from schema
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
