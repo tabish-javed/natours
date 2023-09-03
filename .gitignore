@@ -1,6 +1,5 @@
 dev-data/
 node_modules/
 package-lock.*
-config.env
 .eslintrc.json
-request.txt
+config.env

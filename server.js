@@ -16,25 +16,6 @@ const DB_URL = process.env.DB_CONNECT_STRING
 mongoose.connect(DB_URL).then(() => console.log('Successfully connected to Database...'));
 
 
-const tourSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'A tour must have a name'],
-        unique: true
-    },
-    rating: {
-        type: Number,
-        default: 4.5
-    },
-    price: {
-        type: Number,
-        required: [true, 'A tour must have a price']
-    }
-});
-
-const Tour = mongoose.model('Tour', tourSchema);
-
-
 // Server Startup
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
