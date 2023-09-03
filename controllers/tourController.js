@@ -64,7 +64,7 @@ async function createTour (request, response) {
     } catch (error) {
         response.status(400).json({
             status: 'failed',
-            message: 'Invalid data sent!'
+            message: 'Invalid data sent!',
         });
         /* if (error.code === 11000 && error.name === 'MongoServerError') {
             response.status(400).json({
