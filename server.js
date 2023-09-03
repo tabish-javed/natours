@@ -1,9 +1,20 @@
 /* eslint-disable no-console */
 // INTERNAL
-const dotenv = require('dotenv');
-dotenv.config({ path: './config.env' });
+require('dotenv').config({ path: './config.env' });
+// EXTERNAL
+const mongoose = require('mongoose');
 // CUSTOM
 const app = require('./app');
+//---------------------------------------------------
+
+
+const DB_URL = process.env.DB_CONNECT_STRING
+    .replace('<USERNAME>', process.env.DB_USERNAME)
+    .replace('<PASSWORD>', process.env.DB_PASSWORD)
+    .replace('<DB>', 'natours');
+
+mongoose.connect(DB_URL).then(() => console.log('Successfully connected to Database...'));
+
 
 // Server Startup
 const port = process.env.PORT || 3000;
