@@ -1,5 +1,6 @@
 dev-data/
 node_modules/
 package-lock.*
-congig.env
+config.env
 .eslintrc.json
+request.txt
