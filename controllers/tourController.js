@@ -4,6 +4,12 @@ const Tour = require('./../models/tourModel');
 
 
 // MIDDLEWARE BELOW -----------------------------
+function aliasTopTour (request, response, next) {
+    request.query.limit = 5;
+    request.query.sort = '-ratingsAverage,price';
+    request.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+    next();
+}
 // MIDDLEWARE ABOVE -----------------------------
 
 
@@ -32,7 +38,6 @@ async function getAllTours (request, response) {
         }
 
         // 3 - field limiting
-
         if (request.query.fields) {
             const fields = request.query.fields.split(',').join(' ');
             query = query.select(fields);
@@ -44,7 +49,6 @@ async function getAllTours (request, response) {
         const page = +request.query.page || 1;
         const limit = +request.query.limit || 100;
         const skip = (page - 1) * limit;
-
         // page=3&limit=10 (1-10 page1, 11-20 page2, 21-30 page3)
         query = query.skip(skip).limit(limit);
 
@@ -178,6 +182,7 @@ async function deleteTour (request, response) {
 
 
 module.exports = {
+    aliasTopTour: aliasTopTour,
     getAllTours: getAllTours,
     getTour: getTour,
     createTour: createTour,
