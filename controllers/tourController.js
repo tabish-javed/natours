@@ -31,15 +31,37 @@ async function getAllTours (request, response) {
             query = query.sort('-createdAt');
         }
 
+        // 3 - field limiting
+
+        if (request.query.fields) {
+            const fields = request.query.fields.split(',').join(' ');
+            query = query.select(fields);
+        } else {
+            query = query.select('-__v');
+        }
+
+        // 4 - pagination
+        const page = +request.query.page || 1;
+        const limit = +request.query.limit || 100;
+        const skip = (page - 1) * limit;
+
+        // page=3&limit=10 (1-10 page1, 11-20 page2, 21-30 page3)
+        query = query.skip(skip).limit(limit);
+
+        if (request.query.page) {
+            const numberTours = await Tour.countDocuments();
+            if (skip >= numberTours) throw Error('This page does not exist');
+        }
+
         // execute query
         const tours = await query;
+        // query.sort().select().skip().limit()
 
         // const tours = Tour.find()
         //     .where('duration')
         //     .equals(5)
         //     .where('difficulty')
         //     .equals('easy');
-
 
         // send response
         response.status(200).json({
