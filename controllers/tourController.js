@@ -7,7 +7,6 @@ const Tour = require('./../models/tourModel');
 // MIDDLEWARE ABOVE -----------------------------
 
 
-// TOURS CONTROLLERS ----------------------
 // get all tours ----
 async function getAllTours (request, response) {
     try {
