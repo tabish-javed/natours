@@ -10,7 +10,38 @@ const Tour = require('./../models/tourModel');
 // get all tours ----
 async function getAllTours (request, response) {
     try {
-        const tours = await Tour.find();
+        // build query
+        // 1A - filtering
+        const queryObject = { ...request.query };
+        const excludedFields = ['page', 'sort', 'limit', 'fields'];
+        excludedFields.forEach(element => delete queryObject[element]);
+
+        // 1B- advanced filtering
+        let queryString = JSON.stringify(queryObject);
+        queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+        let query = Tour.find(JSON.parse(queryString));
+
+        // 2 - sorting
+        if (request.query.sort) {
+            const sortBy = request.query.sort.split(',').join(' ');
+            query = query.sort(sortBy);
+            // sort("price ratingAverage")
+        } else {
+            query = query.sort('-createdAt');
+        }
+
+        // execute query
+        const tours = await query;
+
+        // const tours = Tour.find()
+        //     .where('duration')
+        //     .equals(5)
+        //     .where('difficulty')
+        //     .equals('easy');
+
+
+        // send response
         response.status(200).json({
             status: 'success',
             results: tours.length,
