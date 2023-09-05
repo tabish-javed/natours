@@ -175,6 +175,60 @@ async function getTourStats (request, response) {
     }
 }
 
+async function getMonthlyPlan (request, response) {
+    try {
+        const year = +request.params.year;
+
+        const plan = await Tour.aggregate([
+            {
+                $unwind: '$startDates'
+            },
+            {
+                $match: {
+                    startDates: {
+                        $gte: new Date(`${year}-01-01`),
+                        $lte: new Date(`${year}-12-31`)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: '$startDates' },
+                    numTourStarts: { $sum: 1 },
+                    tours: { $push: '$name' }
+                }
+            },
+            {
+                $addFields: { month: '$_id' }
+            },
+            {
+                $project: {
+                    _id: 0
+                }
+            },
+            {
+                $sort: { numTourStarts: -1 }
+            },
+            {
+                $limit: 12
+            }
+        ]);
+
+
+        response.status(200).json({
+            status: 'success',
+            data: {
+                plan: plan
+            }
+        });
+    } catch (error) {
+        response.status(404).json({
+            status: 'failed',
+            message: error
+        });
+    }
+}
+
 module.exports = {
     aliasTopTour: aliasTopTour,
     getAllTours: getAllTours,
@@ -182,5 +236,6 @@ module.exports = {
     createTour: createTour,
     updateTour: updateTour,
     deleteTour: deleteTour,
-    getTourStats: getTourStats
+    getTourStats: getTourStats,
+    getMonthlyPlan: getMonthlyPlan
 };
