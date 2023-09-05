@@ -67,7 +67,7 @@ async function createTour (request, response) {
 
         const newTour = await Tour.create(request.body);
         // JSON.stringify with these options return JSON text in human readable format.
-        response.status(201).json({
+        response.status(200).json({
             status: 'success',
             data: {
                 tour: newTour
@@ -122,7 +122,7 @@ async function updateTour (request, response) {
 async function deleteTour (request, response) {
     try {
         await Tour.findByIdAndDelete(request.params.id);
-        response.status(204).json({
+        response.status(200).json({
             status: 'success',
             data: {
                 tour: null
@@ -136,6 +136,44 @@ async function deleteTour (request, response) {
     }
 }
 
+async function getTourStats (request, response) {
+    try {
+        const stats = await Tour.aggregate([
+            {
+                $match: { ratingsAverage: { $gte: 4.5 } }
+            },
+            {
+                $group: {
+                    _id: { $toUpper: '$difficulty' },
+                    numRatings: { $sum: '$ratingsQuantity' },
+                    numTours: { $sum: 1 },
+                    avgRating: { $avg: '$ratingsAverage' },
+                    avgPrice: { $avg: '$price' },
+                    minPrice: { $min: '$price' },
+                    maxPrice: { $max: '$price' },
+                }
+            },
+            {
+                $sort: { avgPrice: 1 }
+            },
+            // {
+            //     $match: { _id: { $ne: 'EASY' } }
+            // }
+        ]);
+
+        response.status(200).json({
+            status: 'success',
+            data: {
+                stats: stats
+            }
+        });
+    } catch (error) {
+        response.status(404).json({
+            status: 'failed',
+            message: error
+        });
+    }
+}
 
 module.exports = {
     aliasTopTour: aliasTopTour,
@@ -143,5 +181,6 @@ module.exports = {
     getTour: getTour,
     createTour: createTour,
     updateTour: updateTour,
-    deleteTour: deleteTour
+    deleteTour: deleteTour,
+    getTourStats: getTourStats
 };

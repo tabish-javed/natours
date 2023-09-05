@@ -7,12 +7,14 @@ const mongoose = require('mongoose');
 const app = require('./app');
 //---------------------------------------------------
 
-// mongoDB Connection Setup
-// create connection string
+// mongoDB CONNECTION SETUP
+// create URL string to connect mongoose with.
 const DB_URL = process.env.DB_CONNECT_STRING
     .replace('<USERNAME>', process.env.DB_USERNAME)
     .replace('<PASSWORD>', process.env.DB_PASSWORD)
     .replace('<DB>', 'natours');
+
+
 // connect to mongoDB database
 mongoose.connect(DB_URL).then(() => console.log('Successfully connected to Database...'));
 

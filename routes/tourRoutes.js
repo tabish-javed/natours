@@ -13,6 +13,8 @@ const router = express.Router();
 // alias route (aliasTopTour - middleware) to send top 5 cheap tours
 router.route('/top-5-cheap').get(tourController.aliasTopTour, tourController.getAllTours);
 
+router.route('/tour-stats').get(tourController.getTourStats);
+
 router.route('/')
     .get(tourController.getAllTours)
     .post(tourController.createTour);
