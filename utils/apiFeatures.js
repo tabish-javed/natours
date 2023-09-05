@@ -1,9 +1,19 @@
+/**
+ * Query class having methods for modifying query according to the
+ * received query params inside request.query
+ * @class
+ */
 class APIFeatures {
     constructor(query, queryString) {
         this.query = query;
         this.queryString = queryString;
     }
 
+    /**
+     * The filter function removes 'page/sort/limit/fields' parameter from
+     * request.query and applies operators to the query.
+     * @returns query itself
+     */
     filter () {
         // 1A - filtering
         const queryObject = { ...this.queryString };
@@ -19,6 +29,10 @@ class APIFeatures {
         return this;
     }
 
+    /**
+     * Modify query to enable sorting feature
+     * @returns query
+     */
     sort () {
         // 2 - sorting
         if (this.queryString.sort) {
@@ -31,6 +45,10 @@ class APIFeatures {
         return this;
     }
 
+    /**
+     * Modify query to select only supplied fields in request.query
+     * @returns query
+     */
     limitFields () {
         if (this.queryString.fields) {
             const fields = this.queryString.fields.split(',').join(' ');
@@ -42,6 +60,11 @@ class APIFeatures {
         return this;
     }
 
+    /**
+     * If 'page' and 'limit' values are supplied in request.query
+     * then send only that page and records limited per page.
+     * @returns query
+     */
     paginate () {
         const page = +this.queryString.page || 1;
         const limit = +this.queryString.limit || 100;

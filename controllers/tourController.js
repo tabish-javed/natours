@@ -4,6 +4,14 @@ const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 
 // MIDDLEWARE BELOW -----------------------------
+/**
+ * This middleware function modify query for fetching data when
+ * request hits the route - '/top-5-cheap' then pass request to
+ * getAllTours route.
+ * @param {*} request
+ * @param {*} response
+ * @param {*} next
+ */
 function aliasTopTour (request, response, next) {
     request.query.limit = 5;
     request.query.sort = '-ratingsAverage,price';
