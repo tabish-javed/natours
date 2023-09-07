@@ -55,7 +55,11 @@ const tourSchema = new mongoose.Schema({
         default: Date.now(),
         select: false   // disable this filed to be fetched and sent in output
     },
-    startDates: [Date]
+    startDates: [Date],
+    secretTour: {
+        type: Boolean,
+        default: false
+    }
 
 }, {
     toJSON: { virtuals: true },     // enable virtual properties/fields
@@ -83,6 +87,28 @@ tourSchema.pre('save', function (next) {
 //     console.log(doc);
 //     next();
 // });
+
+// QUERY MIDDLEWARE - modify query just before execution (control secret tours)
+// and (/^find/) regular expression will work for all find operations
+tourSchema.pre(/^find/, function (next) {
+    this.find({ secretTour: { $ne: true } });
+    this.start = Date.now();
+    next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {
+    console.log(`Query taken: ${Date.now() - this.start} milliseconds`);
+    next();
+});
+
+
+// AGGREGATION MIDDLEWARE - disable secret tours from aggregation (analysis)
+tourSchema.pre('aggregate', function (next) {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+    console.log(this.pipeline());
+    next();
+});
+
 
 // create model from above document schema to be used to find/aggregate etc.
 const Tour = mongoose.model('Tour', tourSchema);

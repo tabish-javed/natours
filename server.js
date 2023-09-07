@@ -26,10 +26,10 @@ const server = app.listen(port, () => {
 });
 
 
-// enable graceful shutdown
-process.on('SIGINT', () => {
-    console.log('SIGINT signal received: closing HTTP server');
-    server.close(() => {
-        console.log('HTTP server closed');
-    });
-});
+// // enable graceful shutdown
+// process.on('SIGINT', () => {
+//     console.log('SIGINT signal received: closing HTTP server');
+//     server.close(() => {
+//         console.log('HTTP server closed');
+//     });
+// });
