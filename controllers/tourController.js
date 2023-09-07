@@ -3,7 +3,7 @@
 const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 
-// MIDDLEWARE BELOW -----------------------------
+// CUSTOM MIDDLEWARE BELOW -----------------------------
 /**
  * This middleware function modify query for fetching data when
  * request hits the route - '/top-5-cheap' then pass request to
@@ -18,7 +18,7 @@ function aliasTopTour (request, response, next) {
     request.query.fields = 'name,price,ratingsAverage,summary,difficulty';
     next();
 }
-// MIDDLEWARE ABOVE -----------------------------
+// CUSTOM MIDDLEWARE ABOVE -----------------------------
 
 // get all tours ----
 async function getAllTours (request, response) {
@@ -84,23 +84,10 @@ async function createTour (request, response) {
     } catch (error) {
         response.status(400).json({
             status: 'failed',
-            message: 'Invalid data sent!',
+            message: {
+                error: error
+            }
         });
-        /* if (error.code === 11000 && error.name === 'MongoServerError') {
-            response.status(400).json({
-                status: 'failed',
-                message: 'Duplicate Entry!',
-                error: {
-                    name: error.name,
-                    error
-                }
-            });
-        } else {
-            response.status(400).json({
-                status: 'failed',
-                error
-            });
-        } */
     }
 }
 
@@ -109,7 +96,7 @@ async function updateTour (request, response) {
     try {
         const tour = await Tour.findByIdAndUpdate(request.params.id, request.body, {
             new: true,
-            runValidators: true
+            runValidators: true,
         });
         response.status(200).json({
             status: 'success',

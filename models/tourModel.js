@@ -8,12 +8,15 @@ const tourSchema = new mongoose.Schema({
         type: String,
         required: [true, 'A tour must have a name'],
         unique: true,
-        trim: true
+        trim: true,
+        // validators
+        maxlength: [40, 'A tour name must have less or equal of 40 characters'],
+        minlength: [10, 'A tour name must have more or equal of 10 characters']
     },
     slug: String,
     duration: {
         type: Number,
-        required: [true, 'A tour must have a duration']
+        required: [true, 'A tour must have a duration'],
     },
     maxGroupSize: {
         type: Number,
@@ -21,11 +24,19 @@ const tourSchema = new mongoose.Schema({
     },
     difficulty: {
         type: String,
-        required: [true, 'A tour must have a difficulty']
+        required: [true, 'A tour must have a difficulty'],
+        // validators
+        enum: {
+            values: ['easy', 'medium', 'difficult'],
+            message: 'Difficulty is either: easy, medium, difficult'
+        }
     },
     ratingsAverage: {
         type: Number,
-        default: 4.5
+        default: 4.5,
+        // validators
+        min: [1, 'Rating must be 1 or above'],
+        max: [5, 'Rating must be 5 or less']
     },
     ratingsQuantity: {
         type: Number,
@@ -71,6 +82,7 @@ tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7;
 });
 
+
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() but not for .insertMany()
 tourSchema.pre('save', function (next) {
     this.slug = slugify(this.name, { lower: true });
@@ -105,9 +117,10 @@ tourSchema.post(/^find/, function (docs, next) {
 // AGGREGATION MIDDLEWARE - disable secret tours from aggregation (analysis)
 tourSchema.pre('aggregate', function (next) {
     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-    console.log(this.pipeline());
+    // console.log(this.pipeline());
     next();
 });
+
 
 
 // create model from above document schema to be used to find/aggregate etc.
