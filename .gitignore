@@ -3,3 +3,4 @@ node_modules/
 package-lock.*
 .eslintrc.json
 config.env
+.vscode/

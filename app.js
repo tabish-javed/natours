@@ -22,12 +22,6 @@ app.use(express.static(`${__dirname}/public`));
 
 // middleware 1 - custom
 app.use((request, response, next) => {
-    // console.log(`${request.hostname}`);
-    next();
-});
-
-// middleware 2 - custom
-app.use((request, response, next) => {
     request.requestTime = new Date().toISOString();
     next();
 });
@@ -37,5 +31,14 @@ app.use((request, response, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
+
+// bottom middleware 2 - custom (handling all other URLs)
+app.all('*', function (request, response, next) {
+    response.status(404).json({
+        status: 'failed',
+        message: `Can't find ${request.url} on this server!`
+    });
+    next();
+});
 
 module.exports = app;
