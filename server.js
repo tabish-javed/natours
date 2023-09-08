@@ -21,7 +21,7 @@ mongoose.connect(DB_URL).then(() => console.log('Successfully connected to Datab
 
 // Server Startup
 const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
+app.listen(port, () => {
     console.log(`API server started on port: ${port}`);
 });
 

@@ -1,6 +1,8 @@
+/* eslint-disable no-console */
 // EXTERNAL
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+require('validator');
 
 // define schema for tours documents inside database
 const tourSchema = new mongoose.Schema({
@@ -11,7 +13,9 @@ const tourSchema = new mongoose.Schema({
         trim: true,
         // validators
         maxlength: [40, 'A tour name must have less or equal of 40 characters'],
-        minlength: [10, 'A tour name must have more or equal of 10 characters']
+        minlength: [10, 'A tour name must have more or equal of 10 characters'],
+        // validate: [validator.isAlpha, 'Tour name must only contain characters']
+
     },
     slug: String,
     duration: {
@@ -46,7 +50,18 @@ const tourSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'A tour must have a price']
     },
-    priceDiscount: Number,
+    priceDiscount: {
+        type: Number,
+        // adding custom validator using callback functions
+        validate: {
+            message: 'Discounted price ({VALUE}) is higher then the price',
+            validator: function (value) {
+                // "this" keyword only points to current document on NEW document creation
+                // it won't work for document update
+                return value < this.price;
+            }
+        }
+    },
     summary: {
         type: String,
         trim: true,
