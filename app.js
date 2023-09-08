@@ -3,6 +3,9 @@
 const express = require('express');
 const morgan = require('morgan');
 // CUSTOM
+const AppError = require('./utils/appError');
+const errorController = require('./controllers/errorController');
+
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
@@ -40,24 +43,16 @@ app.all('*', function (request, response, next) {
     // });
     // next();
 
-    const error = new Error(`Can't find ${request.url} on this server!`);
-    error.status = 'failed';
-    error.statusCode = 404;
+    // const error = new Error(`Can't find ${request.url} on this server!`);
+    // error.status = 'failed';
+    // error.statusCode = 404;
+    // next(error)
 
-    next(error);
+    next(new AppError(`Can't find ${request.url} on this server!`, 404));
 });
 
 
 // error handling middleware
-app.use((error, request, response, next) => {
-    error.statusCode = error.statusCode || 500;
-    error.status = error.status || 'error';
-
-    response.status(error.statusCode).json({
-        status: error.status,
-        message: error.message
-    });
-    next();
-});
+app.use(errorController.globalErrorHandler);
 
 module.exports = app;
