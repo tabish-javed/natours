@@ -7,6 +7,14 @@ const mongoose = require('mongoose');
 const app = require('./app');
 //---------------------------------------------------
 
+process.on('uncaughtException', error => {
+    console.log('Uncaught Exception, Exiting...');
+    console.log(error.message);
+    server.close(() => {
+        process.exit(1);
+    });
+});
+
 // mongoDB CONNECTION SETUP
 // create URL string to connect mongoose with.
 const DB_URL = process.env.DB_CONNECT_STRING
@@ -19,18 +27,17 @@ const DB_URL = process.env.DB_CONNECT_STRING
 mongoose.connect(DB_URL)
     .then(() => {
         console.log('Connected to Database!');
-        // Server Startup
-
     })
     .catch(error => {
         console.log(error.message);
-        console.log('Can not connect to Database, exiting...');
+        console.log('Can not connect to Database, Exiting...');
         server.close(() => {
             process.exit(1);
         });
     });
 
 
+// Server Startup
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
     console.log(`API server started on port: ${port}`);
@@ -38,19 +45,12 @@ const server = app.listen(port, () => {
 
 
 process.on('unhandledRejection', error => {
-    console.log(error.name, error.message);
-    console.log('DB CONNECTION LOST...EXITING...');
+    console.log('Database Connection Lost... Exiting...');
+    console.log(error);
     server.close(() => {
         process.exit(1);
     });
 });
 
-mongoose.connection.on('open', () => console.log('connecting...'));
 
-// // enable graceful shutdown
-// process.on('SIGINT', () => {
-//     console.log('SIGINT signal received: closing HTTP server');
-//     server.close(() => {
-//         console.log('HTTP server closed');
-//     });
-// });
+mongoose.connection.on('open', () => console.log('Connecting...'));
