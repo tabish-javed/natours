@@ -16,15 +16,36 @@ const DB_URL = process.env.DB_CONNECT_STRING
 
 
 // connect to mongoDB database
-mongoose.connect(DB_URL).then(() => console.log('Successfully connected to Database...'));
+mongoose.connect(DB_URL)
+    .then(() => {
+        console.log('Connected to Database!');
+        // Server Startup
+
+    })
+    .catch(error => {
+        console.log(error.message);
+        console.log('Can not connect to Database, exiting...');
+        server.close(() => {
+            process.exit(1);
+        });
+    });
 
 
-// Server Startup
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`API server started on port: ${port}`);
 });
 
+
+process.on('unhandledRejection', error => {
+    console.log(error.name, error.message);
+    console.log('DB CONNECTION LOST...EXITING...');
+    server.close(() => {
+        process.exit(1);
+    });
+});
+
+mongoose.connection.on('open', () => console.log('connecting...'));
 
 // // enable graceful shutdown
 // process.on('SIGINT', () => {
