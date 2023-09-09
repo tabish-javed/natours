@@ -3,6 +3,7 @@
 // CUSTOM
 const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
+const AppError = require('../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 
 // CUSTOM MIDDLEWARE BELOW -----------------------------
@@ -46,8 +47,13 @@ const getAllTours = catchAsync(async (request, response, next) => {
 
 // get one tour ----
 const getTour = catchAsync(async (request, response, next) => {
-    const tour = await Tour.findById(request.params.id);
     // Tour.findOne({_id: request.params.id})
+    const tour = await Tour.findById(request.params.id);
+
+    if (!tour) {
+        return next(new AppError(`No tour found with ID: ${request.params.id}`, 404));
+    }
+
     response.status(200).json({
         status: 'success',
         results: tour.length,
@@ -80,6 +86,11 @@ const updateTour = catchAsync(async (request, response, next) => {
         new: true,
         runValidators: true,
     });
+
+    if (!tour) {
+        return next(new AppError(`No tour found with ID: ${request.params.id}`, 404));
+    }
+
     response.status(200).json({
         status: 'success',
         data: {
@@ -91,8 +102,13 @@ const updateTour = catchAsync(async (request, response, next) => {
 
 // delete tour ----
 const deleteTour = catchAsync(async (request, response, next) => {
-    await Tour.findByIdAndDelete(request.params.id);
-    response.status(200).json({
+    const tour = await Tour.findByIdAndDelete(request.params.id);
+
+    if (!tour) {
+        return next(new AppError(`No tour found with ID: ${request.params.id}`, 404));
+    }
+
+    response.status(204).json({
         status: 'success',
         data: {
             tour: null
