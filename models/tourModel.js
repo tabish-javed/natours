@@ -2,7 +2,7 @@
 // EXTERNAL
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-require('validator');
+// require('validator');
 
 // define schema for tours documents inside database
 const tourSchema = new mongoose.Schema({
