@@ -115,21 +115,24 @@ tourSchema.pre('save', function (next) {
 //     next();
 // });
 
-// QUERY MIDDLEWARE - modify query just before execution (control secret tours)
+// find query hook - modify query just before execution (control secret tours)
 // and (/^find/) regular expression will work for all find operations
 tourSchema.pre(/^find/, function (next) {
+    // in pre, this points to query
     this.find({ secretTour: { $ne: true } });
     this.start = Date.now();
     next();
 });
 
+// find query hook - runs just after save() completed
 tourSchema.post(/^find/, function (docs, next) {
+    // in post, this points to document
     console.log(`Query taken: ${Date.now() - this.start} milliseconds`);
     next();
 });
 
 
-// AGGREGATION MIDDLEWARE - disable secret tours from aggregation (analysis)
+// aggregation query hook - disable secret tours from aggregation (analysis)
 tourSchema.pre('aggregate', function (next) {
     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
     // console.log(this.pipeline());

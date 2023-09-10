@@ -21,7 +21,8 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Please enter password'],
-        minlength: 8
+        minlength: 8,
+        select: false
     },
     passwordConfirm: {
         type: String,
@@ -36,9 +37,10 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-
+// setting up hook - for encrypting user supplied password just before saved to DB.
+// works only on save() or create()
 userSchema.pre('save', async function (next) {
-    // ONly run this function if password was actually modified
+    // only run this function if password was actually modified
     if (!this.isModified('password')) return next();
     // has the password with cost of 12
     this.password = await bcrypt.hash(this.password, 12);
@@ -46,6 +48,18 @@ userSchema.pre('save', async function (next) {
     this.passwordConfirm = undefined;
     next();
 });
+
+
+/**
+ * This instance method available on all document objects. It compares
+ * password supplied to logIn with the password stored in database.
+ * @param {*} candidatePassword
+ * @param {*} userPassword
+ * @returns boolean
+ */
+userSchema.methods.isPasswordCorrect = async function (candidatePassword, userPassword) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 
 const User = mongoose.model('User', userSchema);

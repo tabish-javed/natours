@@ -1,10 +1,21 @@
+const User = require('./../models/userModel');
+const catchAsync = require('./../utils/catchAsync');
+
 // USERS CONTROLLERS ----
-function getAllUsers (request, response) {
-    response.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined!'
+const getAllUsers = catchAsync(async (request, response, next) => {
+
+    const users = await User.find();
+
+    // send response
+    response.status(200).json({
+        status: 'success',
+        results: users.length,
+        data: {
+            users: users
+        }
     });
-}
+});
+
 
 function getUser (request, response) {
     response.status(500).json({
