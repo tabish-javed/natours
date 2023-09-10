@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const User = require('./../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 
