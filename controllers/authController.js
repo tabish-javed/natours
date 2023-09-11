@@ -28,6 +28,7 @@ const signUp = catchAsync(async function (request, response, next) {
 
     // do not send password to user
     newUser.password = undefined;
+    // finally send response with token and user data
     response.status(201).json({
         status: 'success',
         token: token,
@@ -61,7 +62,29 @@ const logIn = catchAsync(async function (request, response, next) {
 });
 
 
+const protect = catchAsync(async function (request, response, next) {
+    // 1 check if token exists in request
+    let token;
+    if (request.headers.authorization && request.headers.authorization.startsWith('Bearer')) {
+        token = request.headers.authorization.split(' ')[1];
+    }
+    if (!token) {
+        return next(new AppError('You are not logged in! Please log in to get access', 401));
+    };
+
+    // 2 verify token
+
+    // 3 check if user still exists
+
+    // 4 check if user changed password after token was issued
+
+
+    next();
+});
+
+
 module.exports = {
     signUp: signUp,
-    logIn: logIn
+    logIn: logIn,
+    protect: protect
 };
