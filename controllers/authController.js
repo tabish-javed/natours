@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+const util = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('./../models/userModel');
 const AppError = require('../utils/appError');
@@ -10,9 +11,14 @@ const catchAsync = require('../utils/catchAsync');
  * @param {_id} id
  * @returns JSON Web Token
  */
-function signToken (id) {
-    return jwt.sign({ id: id },
+async function signToken (id) {
+    return await util.promisify(jwt.sign)({ id: id },
         process.env.JWT_SECRET, { expiresIn: process.env.JWD_EXPIRY });
+}
+
+
+async function decodeToken (token) {
+    return await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
 }
 
 
@@ -21,10 +27,11 @@ const signUp = catchAsync(async function (request, response, next) {
         name: request.body.name,
         email: request.body.email,
         password: request.body.password,
-        passwordConfirm: request.body.passwordConfirm
+        passwordConfirm: request.body.passwordConfirm,
+        passwordChangedAt: request.body.passwordChangedAt
     });
 
-    const token = signToken(newUser._id);
+    const token = await signToken(newUser._id);
 
     // do not send password to user
     newUser.password = undefined;
@@ -53,7 +60,7 @@ const logIn = catchAsync(async function (request, response, next) {
         return next(new AppError('Incorrect email or password', 401));
     }
     // 3 if everything is ok, send token to client
-    const token = signToken(user._id);
+    const token = await signToken(user._id);
 
     response.status(200).json({
         status: 'success',
@@ -69,16 +76,22 @@ const protect = catchAsync(async function (request, response, next) {
         token = request.headers.authorization.split(' ')[1];
     }
     if (!token) {
-        return next(new AppError('You are not logged in! Please log in to get access', 401));
+        return next(new AppError('You are not logged in! Please log in to get access.', 401));
     };
-
     // 2 verify token
-
+    const decoded = await decodeToken(token);
     // 3 check if user still exists
-
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+        return next(new AppError('User belongs to the token no longer exist.', 401));
+    }
     // 4 check if user changed password after token was issued
+    if (currentUser.isPasswordChanged(decoded.iat)) {
+        return next(new AppError('User recently changed password! Please login again.', 401));
+    }
 
-
+    // finally grant access to protect route
+    request.user = currentUser;
     next();
 });
 

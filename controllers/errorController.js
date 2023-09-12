@@ -17,6 +17,13 @@ function handleValidationErrorDB (err) {
 
 }
 
+function handleJWTError () {
+    return new AppError('Invalid token. Please log in again!', 401);
+}
+
+function handleJWTExpiredError () {
+    return new AppError('Your token has expired! Please log in again', 401);
+}
 
 // send error functions
 function sendErrorDev (error, response) {
@@ -40,6 +47,7 @@ function sendErrorPrd (error, response) {
         // 1 - log Error
         // console.error('ERROR! - ', error);
         // 2 - send error
+        console.error('Error -> ', error);
         response.status(500).json({
             status: 'error',
             message: 'Something went wrong!'
@@ -60,6 +68,8 @@ function globalErrorHandler (error, request, response, next) {
         if (err.name === 'CastError') err = handleCastErrorDB(err);
         if (err.code === 11000) err = handleDuplicateFieldsDB(err);
         if (err.name === 'ValidationError') err = handleValidationErrorDB(err);
+        if (err.name === 'JsonWebTokenError') err = handleJWTError();
+        if (err.name === 'TokenExpiredError') err = handleJWTExpiredError();
 
         sendErrorPrd(err, response);
     }
