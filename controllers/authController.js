@@ -111,9 +111,29 @@ const restrict = function (...roles) {
 };
 
 
+const forgotPassword = catchAsync(async function (request, response, next) {
+    // 1- get user based on POSTed email
+    const user = await User.findOne({ email: request.body.email });
+    if (!user) return next(new AppError('There is no user with this email address.', 404));
+
+    // 2- generate the random reset token
+    const resetToken = user.createPasswordResetToken();
+    await user.save({ validateModifiedOnly: true });
+
+
+    // 3- send email
+});
+
+
+const resetPassword = function (request, response, next) {
+
+};
+
 module.exports = {
     signUp: signUp,
     logIn: logIn,
     protect: protect,
-    restrict: restrict
+    restrict: restrict,
+    forgotPassword: forgotPassword,
+    resetPassword: resetPassword
 };
