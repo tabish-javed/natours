@@ -28,7 +28,8 @@ const signUp = catchAsync(async function (request, response, next) {
         email: request.body.email,
         password: request.body.password,
         passwordConfirm: request.body.passwordConfirm,
-        passwordChangedAt: request.body.passwordChangedAt
+        passwordChangedAt: request.body.passwordChangedAt,
+        role: request.body.role,
     });
 
     const token = await signToken(newUser._id);
@@ -91,13 +92,28 @@ const protect = catchAsync(async function (request, response, next) {
     }
 
     // finally grant access to protect route
+    // AND send user object along with request to next route
+    // which is in this case is "restrict" route
     request.user = currentUser;
     next();
 });
 
 
+const restrict = function (...roles) {
+    return function (request, response, next) {
+        //roles ['admin', 'lead-guide'] - role is now just "user"
+        // receives user's role property from protect route as it was executed just before
+        if (!roles.includes(request.user.role)) {
+            return next(new AppError('You do not have permission to perform this action', 403));
+        }
+        next();
+    };
+};
+
+
 module.exports = {
     signUp: signUp,
     logIn: logIn,
-    protect: protect
+    protect: protect,
+    restrict: restrict
 };
