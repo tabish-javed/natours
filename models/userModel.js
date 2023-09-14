@@ -64,6 +64,16 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
+// setting up hook - to save passwordChangedAt property on user document/object,
+// except when password field was directly modified or this is very first entry,
+// if so, this hook doesn't do anything and pass the request to next middleware.
+userSchema.pre('save', function (next) {
+    if (!this.isDirectModified('password') || this.isNew) return next();
+
+    this.passwordChangedAt = Date.now() - (2 * 1_000);
+    next();
+});
+
 
 /**
  * This instance method available on all document objects. It compares
@@ -97,6 +107,7 @@ userSchema.methods.createPasswordResetToken = function () {
     console.log(resetToken, this.passwordResetToken);
     return resetToken;
 };
+
 
 const User = mongoose.model('User', userSchema);
 

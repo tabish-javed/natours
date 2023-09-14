@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+const crypto = require('crypto');
 const util = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('./../models/userModel');
@@ -124,9 +125,7 @@ const forgotPassword = catchAsync(async function (request, response, next) {
 
     // 3- send email
     const resetURL = `${request.protocol}://${request.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-    const message = `Forgot your password? Submit a PATCH request with your new password and
-    passwordConfirm to: ${resetURL} \n\nIf you didn't request this password reset, please ignore
-    this email!`;
+    const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to:\n${resetURL} \n\nIf you didn't request this password reset, please ignore this email!`;
 
     try {
         await sendEmail({
@@ -149,9 +148,40 @@ const forgotPassword = catchAsync(async function (request, response, next) {
 });
 
 
-const resetPassword = function (request, response, next) {
+const resetPassword = catchAsync(async function (request, response, next) {
+    // 1- get user based on the token
+    const hashedToken = crypto.createHash('sha256')
+        .update(request.params.token)
+        .digest('hex');
 
-};
+    const user = await User.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExpires: { $gt: Date.now() }
+    });
+
+    // 2- check token is expired? and there is user, then set the new password
+    if (!user) {
+        return next(new AppError('Invalid token or has expired', 400));
+    }
+
+    user.password = request.body.password;
+    user.passwordConfirm = request.body.passwordConfirm;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    // user.passwordChangedAt = Date.now(); <==== TODO
+    await user.save();
+
+    // 3- update changedPasswordAt property for the user,
+
+    // 4- log the user in, send JWT token
+    const token = await signToken(user._id);
+
+    response.status(200).json({
+        status: 'success',
+        token: token
+    });
+});
+
 
 module.exports = {
     signUp: signUp,
