@@ -1,8 +1,23 @@
+const AppError = require('../utils/appError');
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 
+
+// utility functions
+function filterObject (object, ...allowedFields) {
+    const newObject = {};
+    Object.keys(object).forEach(element => {
+        if (allowedFields.includes(element)) {
+            newObject[element] = object[element];
+        }
+    });
+
+    return newObject;
+}
+
+
 // USERS CONTROLLERS ----
-const getAllUsers = catchAsync(async (request, response, next) => {
+const getAllUsers = catchAsync(async (request, response) => {
 
     const users = await User.find();
 
@@ -12,6 +27,32 @@ const getAllUsers = catchAsync(async (request, response, next) => {
         results: users.length,
         data: {
             users: users
+        }
+    });
+});
+
+
+// when user update his/her data i.e. email etc.
+const updateMe = catchAsync(async function (request, response, next) {
+    // 1- create error if user POSTed password data (if he/she tries to update password)
+    if (request.body.password || request.body.passwordConfirm) {
+        return next(new AppError('This route is not for password updates. Please use /updatePassword', 400));
+    }
+
+    // 2- filter user object fields which shouldn't be saved, in other words;
+    // specify only the fields which are supposed to be updated.
+    const filteredBody = filterObject(request.body, 'name', 'email');
+
+    // 3- update user document
+    const updatedUser = await User.findByIdAndUpdate(request.user.id, filteredBody, {
+        new: true,
+        runValidators: true
+    });
+
+    response.status(200).json({
+        status: 'success',
+        data: {
+            user: updatedUser
         }
     });
 });
@@ -47,6 +88,7 @@ function deleteUser (request, response) {
 
 module.exports = {
     getAllUsers: getAllUsers,
+    updateMe: updateMe,
     getUser: getUser,
     createUser: createUser,
     updateUser: updateUser,
