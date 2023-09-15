@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-// setting up hook - for encrypting user supplied password just before saved to DB.
+// Setting up hook/middleware - for encrypting user supplied password just before saving to DB.
 // works only on save() or create()
 userSchema.pre('save', async function (next) {
     // only run this function if password was actually modified
@@ -64,11 +64,11 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
-// setting up hook - to save passwordChangedAt property on user document/object,
-// except when password field was directly modified or this is very first entry,
-// if so, this hook doesn't do anything and pass the request to next middleware.
+// Setting up hook/middleware - to save passwordChangedAt property on user document/object,
+// except when password field was directly modified or this is very first entry, if so,
+// this hook doesn't do anything and pass the request to next middleware.;
 userSchema.pre('save', function (next) {
-    if (!this.isDirectModified('password') || this.isNew) return next();
+    if (!this.isModified('password') || this.isNew) return next();
 
     this.passwordChangedAt = Date.now() - (2 * 1_000);
     next();
@@ -104,7 +104,6 @@ userSchema.methods.createPasswordResetToken = function () {
     this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
     this.passwordResetExpires = Date.now() + 10 * 60 * 1_000;
 
-    console.log(resetToken, this.passwordResetToken);
     return resetToken;
 };
 

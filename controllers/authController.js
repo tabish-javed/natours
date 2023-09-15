@@ -168,10 +168,10 @@ const resetPassword = catchAsync(async function (request, response, next) {
     user.passwordConfirm = request.body.passwordConfirm;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
-    // user.passwordChangedAt = Date.now(); <==== TODO
     await user.save();
 
-    // 3- update changedPasswordAt property for the user,
+    // 3- update changedPasswordAt property for the user
+    // *step 3 was taken care by a pre hook on password save field in userModel
 
     // 4- log the user in, send JWT token
     const token = await signToken(user._id);
