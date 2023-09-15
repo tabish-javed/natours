@@ -24,6 +24,19 @@ async function decodeToken (token) {
 }
 
 
+async function createSendToken (user, statusCode, response) {
+    const token = await signToken(user._id);
+
+    response.status(statusCode).json({
+        status: 'success',
+        token: token,
+        // data: {
+        //     user: user
+        // }
+    });
+}
+
+
 const signUp = catchAsync(async function (request, response, next) {
     const newUser = await User.create({
         name: request.body.name,
@@ -34,18 +47,21 @@ const signUp = catchAsync(async function (request, response, next) {
         role: request.body.role,
     });
 
-    const token = await signToken(newUser._id);
-
     // do not send password to user
     newUser.password = undefined;
+
     // finally send response with token and user data
-    response.status(201).json({
-        status: 'success',
-        token: token,
-        data: {
-            user: newUser
-        }
-    });
+    await createSendToken(newUser, 201, response);
+
+    // CODE BELOW IS REPLACED BY createSendToken()
+    // const token = await signToken(newUser._id);
+    // response.status(201).json({
+    //     status: 'success',
+    //     token: token,
+    //     data: {
+    //         user: newUser
+    //     }
+    // });
 });
 
 
@@ -63,12 +79,7 @@ const logIn = catchAsync(async function (request, response, next) {
         return next(new AppError('Incorrect email or password', 401));
     }
     // 3 if everything is ok, send token to client
-    const token = await signToken(user._id);
-
-    response.status(200).json({
-        status: 'success',
-        token: token
-    });
+    await createSendToken(user, 200, response);
 });
 
 
@@ -173,13 +184,27 @@ const resetPassword = catchAsync(async function (request, response, next) {
     // 3- update changedPasswordAt property for the user
     // *step 3 was taken care by a pre hook on password save field in userModel
 
-    // 4- log the user in, send JWT token
-    const token = await signToken(user._id);
+    // 4- log the user in and send JWT
+    await createSendToken(user, 200, response);
+});
 
-    response.status(200).json({
-        status: 'success',
-        token: token
-    });
+
+const updatePassword = catchAsync(async function (request, response, next) {
+    // 1- get user from collection
+    const user = await User.findById(request.user.id).select('+password');
+
+    // 2- check if POSTed password is correct
+    if (!(await user.isPasswordCorrect(request.body.passwordCurrent, user.password))) {
+        return next(new AppError('The supplied password is incorrect', 401));
+    }
+
+    // 3- if so, update password
+    user.password = request.body.password;
+    user.passwordConfirm = request.body.passwordConfirm;
+    await user.save();
+
+    // 4- log the user in and send JWT
+    await createSendToken(user, 200, response);
 });
 
 
@@ -189,5 +214,6 @@ module.exports = {
     protect: protect,
     restrict: restrict,
     forgotPassword: forgotPassword,
-    resetPassword: resetPassword
+    resetPassword: resetPassword,
+    updatePassword: updatePassword
 };
