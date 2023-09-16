@@ -72,13 +72,18 @@ const logIn = catchAsync(async function (request, response, next) {
     if (!email || !password) return next(new AppError('Please provide email and password', 400));
 
     // 2 check if user exists && password is correct
-    const user = await User.findOne({ email: email }).select('+password');
+    const user = await User.findOne({ email: email }).select('+password').select('+active');
 
     // using bcrypt in userModel define a method to user object. Then use that method in here
     if (!user || !(await user.isPasswordCorrect(password, user.password))) {
         return next(new AppError('Incorrect email or password', 401));
     }
-    // 3 if everything is ok, send token to client
+
+    // 3- set user's active field/property to true
+    user.active = true;
+    await user.save({ validateModifiedOnly: true });
+
+    // 4- if everything is ok, send token to client
     await createSendToken(user, 200, response);
 });
 

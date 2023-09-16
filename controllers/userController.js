@@ -16,27 +16,13 @@ function filterObject (object, ...allowedFields) {
 }
 
 
-// USERS CONTROLLERS ----
-const getAllUsers = catchAsync(async (request, response) => {
-
-    const users = await User.find();
-
-    // send response
-    response.status(200).json({
-        status: 'success',
-        results: users.length,
-        data: {
-            users: users
-        }
-    });
-});
-
+// ---- USERS CONTROLLERS ----
 
 // when user update his/her data i.e. email etc.
 const updateMe = catchAsync(async function (request, response, next) {
     // 1- create error if user POSTed password data (if he/she tries to update password)
     if (request.body.password || request.body.passwordConfirm) {
-        return next(new AppError('This route is not for password updates. Please use /updatePassword', 400));
+        return next(new AppError('This route is not for password update. Please use /updatePassword', 400));
     }
 
     // 2- filter user object fields which shouldn't be saved, in other words;
@@ -57,6 +43,30 @@ const updateMe = catchAsync(async function (request, response, next) {
     });
 });
 
+
+const deleteMe = catchAsync(async function (request, response, next) {
+    await User.findByIdAndUpdate(request.user.id, { active: false });
+
+    response.status(204).json({
+        status: 'success',
+        data: null
+    });
+});
+
+
+const getAllUsers = catchAsync(async (request, response) => {
+
+    const users = await User.find().where({ active: { $eq: true } });
+
+    // send response
+    response.status(200).json({
+        status: 'success',
+        results: users.length,
+        data: {
+            users: users
+        }
+    });
+});
 
 function getUser (request, response) {
     response.status(500).json({
@@ -87,8 +97,9 @@ function deleteUser (request, response) {
 }
 
 module.exports = {
-    getAllUsers: getAllUsers,
     updateMe: updateMe,
+    deleteMe: deleteMe,
+    getAllUsers: getAllUsers,
     getUser: getUser,
     createUser: createUser,
     updateUser: updateUser,

@@ -49,6 +49,11 @@ const userSchema = new mongoose.Schema({
     },
     passwordResetExpires: {
         type: Date
+    },
+    active: {
+        type: Boolean,
+        default: true,
+        select: false
     }
 });
 
@@ -73,6 +78,14 @@ userSchema.pre('save', function (next) {
     this.passwordChangedAt = Date.now() - (2 * 1_000);
     next();
 });
+
+
+// this hook/middleware works for all queries with find*. In here query is modified to return
+// only those documents where action property/field is not set to "false".
+// userSchema.pre(/^find/, function (next) {   // this points to current query
+//     this.find({ active: { $ne: false } });
+//     next();
+// });
 
 
 /**
