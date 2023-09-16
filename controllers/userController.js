@@ -44,8 +44,11 @@ const updateMe = catchAsync(async function (request, response, next) {
 });
 
 
-const deleteMe = catchAsync(async function (request, response, next) {
-    await User.findByIdAndUpdate(request.user.id, { active: false });
+const deactivateMe = catchAsync(async function (request, response, next) {
+    await User.findByIdAndUpdate(request.user.id, {
+        active: false,
+        passwordChangedAt: Date.now()
+    });
 
     response.status(204).json({
         status: 'success',
@@ -68,12 +71,14 @@ const getAllUsers = catchAsync(async (request, response) => {
     });
 });
 
+
 function getUser (request, response) {
     response.status(500).json({
         status: 'error',
         message: 'This route is not yet defined!'
     });
 }
+
 
 function createUser (request, response) {
     response.status(500).json({
@@ -82,12 +87,14 @@ function createUser (request, response) {
     });
 }
 
+
 function updateUser (request, response) {
     response.status(500).json({
         status: 'error',
         message: 'This route is not yet defined!'
     });
 }
+
 
 function deleteUser (request, response) {
     response.status(500).json({
@@ -96,9 +103,10 @@ function deleteUser (request, response) {
     });
 }
 
+
 module.exports = {
     updateMe: updateMe,
-    deleteMe: deleteMe,
+    deactivateMe: deactivateMe,
     getAllUsers: getAllUsers,
     getUser: getUser,
     createUser: createUser,
