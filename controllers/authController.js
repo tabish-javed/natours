@@ -15,7 +15,7 @@ const sendEmail = require('../utils/email');
  */
 async function signToken (id) {
     return await util.promisify(jwt.sign)({ id: id },
-        process.env.JWT_SECRET, { expiresIn: process.env.JWD_EXPIRY });
+        process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 }
 
 
@@ -26,13 +26,29 @@ async function decodeToken (token) {
 
 async function createSendToken (user, statusCode, response) {
     const token = await signToken(user._id);
+    // set cookie options to be used to create cookie
+    const cookieOptions = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1_000),
+        httpOnly: true
+    };
 
+    // depending on the app environment set secure property on the cookie
+    cookieOptions.secure = process.env.NODE_ENV === 'production' ? true : false;
+
+    // add cookie in the response
+    response.cookie('jwt', token, cookieOptions);
+
+    // remove "password" and "active" field before sending in data in response
+    user.password = undefined;
+    user.active = undefined;
+
+    // finally send response
     response.status(statusCode).json({
         status: 'success',
         token: token,
-        // data: {
-        //     user: user
-        // }
+        data: {
+            user: user
+        }
     });
 }
 
