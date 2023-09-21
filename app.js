@@ -1,9 +1,12 @@
 // INTERNAL
 // EXTERNAL
 const express = require('express');
+const mongoose = require('mongoose');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 // CUSTOM
 const AppError = require('./utils/appError');
 const errorController = require('./controllers/errorController');
@@ -36,12 +39,21 @@ app.use('/api', rateLimit(rateLimitOptions));
 app.use(express.json({ limit: '10kb' }));
 
 
+// global middleware - data sanitization against NoSQL query injection
+app.use(mongoSanitize());   // <-- external library for data sanitization
+
+
+// global middleware - data sanitization against XSS
+app.use(xss());
+
+
 // global middleware - serves public files
 app.use(express.static(`${__dirname}/public`));
 
 
 // global test middleware - adding time to the request object
 app.use((request, response, next) => {
+    mongoose.sanitizeFilter(request.body);  // <-- mongoDB's internal method for data sanitization
     request.requestTime = new Date().toISOString();
     next();
 });

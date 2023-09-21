@@ -3,11 +3,19 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Please tell us your name'],
-        trim: true
+        trim: true,
+        // 1- match: /^[a-z\s]+$/gi,   // <-- either match OR validate works, validate has message property.
+        validate: {
+            validator: function () {
+                return /^[a-z\s]+$/gi.test(this.name);
+            },
+            message: 'Name should only contain alphabetic characters.'
+        }
     },
     email: {
         type: String,
