@@ -70,7 +70,6 @@ const createTour = catchAsync(async (request, response, next) => {
     // newTour.save()
 
     const newTour = await Tour.create(request.body);
-    // JSON.stringify with these options return JSON text in human readable format.
     response.status(200).json({
         status: 'success',
         data: {
