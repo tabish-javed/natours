@@ -13,6 +13,7 @@ const errorController = require('./controllers/errorController');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 
 
 const app = express();
@@ -62,6 +63,7 @@ app.use((request, response, next) => {
 // middleware to send request accordingly to desired routers
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 
 // bottom middleware 2 - custom (handling all other URLs)

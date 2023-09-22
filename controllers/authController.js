@@ -135,7 +135,7 @@ const protect = catchAsync(async function (request, response, next) {
 
 const restrict = function (...roles) {
     return function (request, response, next) {
-        //roles ['admin', 'lead-guide'] - role is now just "user"
+        // roles ['admin', 'lead-guide'] - role is now just "user"
         // receives user's role property from protect route as it was executed just before
         if (!roles.includes(request.user.role)) {
             return next(new AppError('You do not have permission to perform this action', 403));
