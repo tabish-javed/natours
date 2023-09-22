@@ -115,7 +115,7 @@ const tourSchema = new mongoose.Schema({
         type: [
             {
                 type: mongoose.Schema.ObjectId,
-                reference: 'User'
+                ref: 'User'
             }
         ]
     }
@@ -144,16 +144,17 @@ tourSchema.pre('save', function (next) {
 //     next();
 // });
 
-// tourSchema.pre('save', function (next) {
-//     console.log('will save document');
-//     next();
-// });
 
-// //
-// tourSchema.post('save', function (doc, next) {
-//     console.log(doc);
-//     next();
-// });
+// find query hook - modify query to also populate User collection data on
+// each find query for tours, i.e. getTour, getAllTours etc.
+tourSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'guides',
+        select: '-__v -passwordChangedAt'
+    });
+    next();
+});
+
 
 // find query hook - modify query just before execution (control secret tours)
 // and (/^find/) regular expression will work for all find operations
@@ -163,6 +164,7 @@ tourSchema.pre(/^find/, function (next) {
     this.start = Date.now();
     next();
 });
+
 
 // find query hook - runs just after save() completed
 tourSchema.post(/^find/, function (docs, next) {
