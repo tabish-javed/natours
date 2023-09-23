@@ -16,10 +16,6 @@ const createReview = catchAsync(async function (request, response) {
 const getAllReviews = catchAsync(async function (request, response) {
     const reviews = await Review.find()
         .populate({
-            path: 'tour',
-            select: 'name',
-        })
-        .populate({
             path: 'user',
             select: 'name photo'
         });

@@ -111,14 +111,12 @@ const tourSchema = new mongoose.Schema({
             day: Number
         }
     ],
-    guides: {
-        type: [
-            {
-                type: mongoose.Schema.ObjectId,
-                ref: 'User'
-            }
-        ]
-    }
+    guides: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User'
+        }
+    ],
 }, {
     toJSON: { virtuals: true },     // enable virtual properties/fields
     toObject: { virtuals: true }    // enable virtual properties/fields
@@ -127,6 +125,14 @@ const tourSchema = new mongoose.Schema({
 // add virtual fields/properties into documents on retrieval
 tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7;
+});
+
+
+// VIRTUAL POPULATE - using to avoid child referencing embedded in a list in tour document
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'tour',
+    localField: '_id'
 });
 
 
