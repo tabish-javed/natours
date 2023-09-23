@@ -3,7 +3,10 @@ const Review = require('./../models/reviewModel');
 
 
 const createReview = catchAsync(async function (request, response) {
-    request.body.user = request.user._id;
+    // Allow nested routes
+    if (!request.body.tour) request.body.tour = request.params.tourID;
+    if (!request.body.user) request.body.user = request.user.id;
+
     const review = await Review.create(request.body);
 
     response.status(201).json({
