@@ -1,4 +1,3 @@
-const AppError = require('../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const Review = require('./../models/reviewModel');
 
@@ -15,7 +14,15 @@ const createReview = catchAsync(async function (request, response) {
 
 
 const getAllReviews = catchAsync(async function (request, response) {
-    const reviews = await Review.find();
+    const reviews = await Review.find()
+        .populate({
+            path: 'tour',
+            select: 'name',
+        })
+        .populate({
+            path: 'user',
+            select: 'name photo'
+        });
 
     response.status(200).json({
         status: 'success',
