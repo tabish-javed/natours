@@ -1,9 +1,6 @@
 /* eslint-disable no-console */
-// EXTERNAL
-const mongoose = require('mongoose');
-const slugify = require('slugify');
-// const User = require('./userModel');
-// require('validator');
+import mongoose from 'mongoose';
+import slugify from 'slugify';
 
 // define schema for tours documents inside database
 const tourSchema = new mongoose.Schema({
@@ -192,4 +189,4 @@ tourSchema.pre('aggregate', function (next) {
 // create model from above document schema to be used to find/aggregate etc.
 const Tour = mongoose.model('Tour', tourSchema);
 
-module.exports = Tour;
+export default Tour;

@@ -1,10 +1,9 @@
 /* eslint-disable no-unused-vars */
-// INTERNAL
-// CUSTOM
-const Tour = require('./../models/tourModel');
-const APIFeatures = require('./../utils/apiFeatures');
-const AppError = require('../utils/appError');
-const catchAsync = require('./../utils/catchAsync');
+import Tour from './../models/tourModel.js';
+import APIFeatures from './../utils/apiFeatures.js';
+import AppError from '../utils/appError.js';
+import catchAsync from './../utils/catchAsync.js';
+import factory from './handlerFactory.js';
 
 // CUSTOM MIDDLEWARE BELOW -----------------------------
 /**
@@ -100,20 +99,7 @@ const updateTour = catchAsync(async (request, response, next) => {
 
 
 // delete tour ----
-const deleteTour = catchAsync(async (request, response, next) => {
-    const tour = await Tour.findByIdAndDelete(request.params.id);
-
-    if (!tour) {
-        return next(new AppError(`No tour found with ID: ${request.params.id}`, 404));
-    }
-
-    response.status(204).json({
-        status: 'success',
-        data: {
-            tour: null
-        }
-    });
-});
+const deleteTour = factory.deleteOne(Tour);
 
 
 // get statistics using aggregation pipeline
@@ -198,14 +184,13 @@ const getMonthlyPlan = catchAsync(async (request, response, next) => {
 });
 
 
-// export all the functions
-module.exports = {
-    aliasTopTour: aliasTopTour,
-    getAllTours: getAllTours,
-    getTour: getTour,
-    createTour: createTour,
-    updateTour: updateTour,
-    deleteTour: deleteTour,
-    getTourStats: getTourStats,
-    getMonthlyPlan: getMonthlyPlan
+export default {
+    aliasTopTour,
+    getAllTours,
+    getTour,
+    createTour,
+    updateTour,
+    deleteTour,
+    getTourStats,
+    getMonthlyPlan
 };

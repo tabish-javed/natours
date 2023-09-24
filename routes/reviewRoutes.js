@@ -1,6 +1,6 @@
-const express = require('express');
-const reviewController = require('../controllers/reviewController');
-const authController = require('../controllers/authController');
+import express from 'express';
+import reviewController from '../controllers/reviewController.js';
+import authController from '../controllers/authController.js';
 
 // mergeParams option combines request which are sent by tourRouter
 const router = express.Router({ mergeParams: true });
@@ -15,4 +15,8 @@ router.route('/')
     .post(authController.protect, authController.restrict('user'), reviewController.createReview);
 
 
-module.exports = router;
+router.route('/:id')
+    .delete(reviewController.deleteReview);
+
+
+export default router;

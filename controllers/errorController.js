@@ -1,4 +1,4 @@
-const AppError = require('./../utils/appError');
+import AppError from './../utils/appError.js';
 
 // error constructor functions
 function handleCastErrorDB (err) {
@@ -76,7 +76,4 @@ function globalErrorHandler (error, request, response, next) {
     next();
 };
 
-
-module.exports = {
-    globalErrorHandler: globalErrorHandler
-};
+export default { globalErrorHandler };

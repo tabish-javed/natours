@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
-// INTERNAL
-require('dotenv').config({ path: './config.env' });
-// EXTERNAL
-const mongoose = require('mongoose');
-// CUSTOM
-const app = require('./app');
-//---------------------------------------------------
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import app from './app.js';
+
+dotenv.config({ path: './config.env' });
+
 
 process.on('uncaughtException', error => {
     console.log('Uncaught Exception, Exiting...');

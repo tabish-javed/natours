@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Building API using Node, Express and MongoDB",
     "main": "app.js",
+    "type": "module",
     "scripts": {
         "start-dev": "nodemon server.js",
         "start-prd": "NODE_ENV=production nodemon server.js"

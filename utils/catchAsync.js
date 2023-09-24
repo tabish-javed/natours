@@ -1,7 +1,8 @@
 function catchAsync (fn) {
-    return (request, response, next) => {
+    return function (request, response, next) {
         fn(request, response, next).catch(error => next(error));
     };
 };
 
-module.exports = catchAsync;
+
+export default catchAsync;

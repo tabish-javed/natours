@@ -1,10 +1,7 @@
-// INTERNAL
-// EXTERNAL
-const express = require('express');
-// CUSTOM
-const tourController = require('../controllers/tourController');
-const authController = require('../controllers/authController');
-const reviewRouter = require('../routes/reviewRoutes');
+import express from 'express';
+import tourController from '../controllers/tourController.js';
+import authController from '../controllers/authController.js';
+import reviewRouter from '../routes/reviewRoutes.js';
 
 
 const router = express.Router();
@@ -37,8 +34,4 @@ router.route('/:id')
         tourController.deleteTour
     );
 
-
-
-
-
-module.exports = router;
+export default router;

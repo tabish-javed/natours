@@ -1,6 +1,7 @@
-const AppError = require('../utils/appError');
-const User = require('./../models/userModel');
-const catchAsync = require('./../utils/catchAsync');
+import AppError from '../utils/appError.js';
+import User from './../models/userModel.js';
+import catchAsync from './../utils/catchAsync.js';
+import factory from './handlerFactory.js';
 
 
 // utility functions
@@ -96,20 +97,14 @@ function updateUser (request, response) {
 }
 
 
-function deleteUser (request, response) {
-    response.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined!'
-    });
-}
+const deleteUser = factory.deleteOne(User);
 
-
-module.exports = {
-    updateMe: updateMe,
-    deactivateMe: deactivateMe,
-    getAllUsers: getAllUsers,
-    getUser: getUser,
-    createUser: createUser,
-    updateUser: updateUser,
-    deleteUser: deleteUser
+export default {
+    updateMe,
+    deactivateMe,
+    getAllUsers,
+    getUser,
+    createUser,
+    updateUser,
+    deleteUser
 };

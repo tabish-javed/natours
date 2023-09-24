@@ -1,19 +1,16 @@
-// INTERNAL
-// EXTERNAL
-const express = require('express');
-const mongoose = require('mongoose');
-const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
-// CUSTOM
-const AppError = require('./utils/appError');
-const errorController = require('./controllers/errorController');
+import express from 'express';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
 
-const tourRouter = require('./routes/tourRoutes');
-const userRouter = require('./routes/userRoutes');
-const reviewRouter = require('./routes/reviewRoutes');
+import AppError from './utils/appError.js';
+import errorController from './controllers/errorController.js';
+import tourRouter from './routes/tourRoutes.js';
+import userRouter from './routes/userRoutes.js';
+import reviewRouter from './routes/reviewRoutes.js';
 
 
 const app = express();
@@ -49,7 +46,7 @@ app.use(xss());
 
 
 // global middleware - serves public files
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static('./public'));
 
 
 // global test middleware - adding time to the request object
@@ -86,4 +83,4 @@ app.all('*', function (request, response, next) {
 // error handling middleware
 app.use(errorController.globalErrorHandler);
 
-module.exports = app;
+export default app;

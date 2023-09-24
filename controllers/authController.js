@@ -1,12 +1,11 @@
 /* eslint-disable no-unused-vars */
-const crypto = require('crypto');
-const util = require('util');
-const jwt = require('jsonwebtoken');
-const User = require('./../models/userModel');
-const AppError = require('../utils/appError');
-const catchAsync = require('../utils/catchAsync');
-const sendEmail = require('../utils/email');
-
+import crypto from 'crypto';
+import util from 'util';
+import jwt from 'jsonwebtoken';
+import User from '../models/userModel.js';
+import AppError from '../utils/appError.js';
+import catchAsync from '../utils/catchAsync.js';
+import sendEmail from '../utils/email.js';
 
 /**
  * This function generate and returns "json web token".
@@ -228,13 +227,12 @@ const updatePassword = catchAsync(async function (request, response, next) {
     await createSendToken(user, 200, response);
 });
 
-
-module.exports = {
-    signUp: signUp,
-    logIn: logIn,
-    protect: protect,
-    restrict: restrict,
-    forgotPassword: forgotPassword,
-    resetPassword: resetPassword,
-    updatePassword: updatePassword
+export default {
+    signUp,
+    logIn,
+    protect,
+    restrict,
+    forgotPassword,
+    resetPassword,
+    updatePassword
 };
