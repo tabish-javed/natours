@@ -1,4 +1,4 @@
-import catchAsync from './../utils/catchAsync.js';
+// import catchAsync from './../utils/catchAsync.js';
 import Review from './../models/reviewModel.js';
 import factory from './handlerFactory.js';
 
@@ -11,27 +11,17 @@ function setTourUserIDs (request, response, next) {
 }
 
 
-const getAllReviews = catchAsync(async function (request, response) {
-    let filter = {};
-    if (request.params.tourID) filter = { tour: request.params.tourID };
-
-    const reviews = await Review.find(filter);
-
-    response.status(200).json({
-        status: 'success',
-        results: reviews.length,
-        data: reviews
-    });
-});
-
+const getAllReviews = factory.getAll(Review);
+const getReview = factory.getOne(Review);
 const createReview = factory.createOne(Review);
 const updateReview = factory.updateOne(Review);
 const deleteReview = factory.deleteOne(Review);
 
 export default {
     setTourUserIDs,
-    createReview,
     getAllReviews,
+    getReview,
+    createReview,
     updateReview,
     deleteReview
 };

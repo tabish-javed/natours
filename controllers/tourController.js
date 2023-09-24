@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Tour from './../models/tourModel.js';
-import APIFeatures from './../utils/apiFeatures.js';
-import AppError from '../utils/appError.js';
+// import APIFeatures from './../utils/apiFeatures.js';
+// import AppError from '../utils/appError.js';
 import catchAsync from './../utils/catchAsync.js';
 import factory from './handlerFactory.js';
 
@@ -24,51 +24,13 @@ function aliasTopTour (request, response, next) {
 
 
 // get all tours
-const getAllTours = catchAsync(async (request, response, next) => {
-    const features = new APIFeatures(Tour.find(), request.query)
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-
-    const tours = await features.query;
-
-    // send response
-    response.status(200).json({
-        status: 'success',
-        results: tours.length,
-        data: {
-            tours: tours
-        }
-    });
-});
-
-
+const getAllTours = factory.getAll(Tour);
 // get one tour ----
-const getTour = catchAsync(async (request, response, next) => {
-    // Tour.findOne({_id: request.params.id})
-    const tour = await Tour.findById(request.params.id).populate('reviews');
-
-    if (!tour) {
-        return next(new AppError(`No tour found with ID: ${request.params.id}`, 404));
-    }
-
-    response.status(200).json({
-        status: 'success',
-        results: tour.length,
-        data: {
-            tour: tour
-        }
-    });
-});
-
-
+const getTour = factory.getOne(Tour, { path: 'reviews' });
 // create tour ----
 const createTour = factory.createOne(Tour);
-
 // update tour ----
 const updateTour = factory.updateOne(Tour);
-
 // delete tour ----
 const deleteTour = factory.deleteOne(Tour);
 

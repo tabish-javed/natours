@@ -58,47 +58,27 @@ const deactivateMe = catchAsync(async function (request, response) {
 });
 
 
-const getAllUsers = catchAsync(async (request, response) => {
-
-    const users = await User.find().where({ active: { $eq: true } });
-
-    // send response
-    response.status(200).json({
-        status: 'success',
-        results: users.length,
-        data: {
-            users: users
-        }
-    });
-});
-
-
-function getUser (request, response) {
-    response.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined!'
-    });
-}
-
-
 function createUser (request, response) {
     response.status(500).json({
         status: 'error',
-        message: 'This route is not yet defined!'
+        message: 'This route is not yet defined! Please use /signup instead.'
     });
 }
 
+
+const getUser = factory.getOne(User);
+const getAllUsers = factory.getAll(User);
+
 // Do NOT update password with this
 const updateUser = factory.updateOne(User);
-
 const deleteUser = factory.deleteOne(User);
 
 export default {
     updateMe,
     deactivateMe,
-    getAllUsers,
-    getUser,
     createUser,
+    getUser,
+    getAllUsers,
     updateUser,
     deleteUser
 };
