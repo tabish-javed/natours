@@ -17,11 +17,10 @@ const createReview = catchAsync(async function (request, response) {
 
 
 const getAllReviews = catchAsync(async function (request, response) {
-    const reviews = await Review.find()
-        .populate({
-            path: 'user',
-            select: 'name photo'
-        });
+    let filter = {};
+    if (request.params.tourID) filter = { tour: request.params.tourID };
+
+    const reviews = await Review.find(filter);
 
     response.status(200).json({
         status: 'success',
@@ -29,6 +28,7 @@ const getAllReviews = catchAsync(async function (request, response) {
         data: reviews
     });
 });
+
 
 module.exports = {
     createReview: createReview,

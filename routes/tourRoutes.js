@@ -4,10 +4,18 @@ const express = require('express');
 // CUSTOM
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
-const reviewController = require('../controllers/reviewController');
+const reviewRouter = require('../routes/reviewRoutes');
 
 
 const router = express.Router();
+
+// POST /tour/278asd214/reviews
+// GET /tour/2429sa2hd/reviews
+
+
+// whenever request comes in this tourRoutes with params "/:tourID/reviews" then
+// request will be passed to reviewRouter.
+router.use('/:tourID/reviews', reviewRouter);
 
 // middleware to check valid ID
 // router.param('id', tourController.checkID);
@@ -30,16 +38,6 @@ router.route('/:id')
     );
 
 
-// POST /tour/278asd214/reviews
-// GET /tour/2429sa2hd/reviews
-// GET /tour/124332322/reviews/as237s321s
-
-router.route('/:tourID/reviews')
-    .post(
-        authController.protect,
-        authController.restrict('user'),
-        reviewController.createReview
-    );
 
 
 
