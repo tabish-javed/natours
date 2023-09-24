@@ -45,7 +45,7 @@ const updateMe = catchAsync(async function (request, response, next) {
 });
 
 
-const deactivateMe = catchAsync(async function (request, response, next) {
+const deactivateMe = catchAsync(async function (request, response) {
     await User.findByIdAndUpdate(request.user.id, {
         active: false,
         passwordChangedAt: Date.now()
@@ -88,14 +88,8 @@ function createUser (request, response) {
     });
 }
 
-
-function updateUser (request, response) {
-    response.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined!'
-    });
-}
-
+// Do NOT update password with this
+const updateUser = factory.updateOne(User);
 
 const deleteUser = factory.deleteOne(User);
 

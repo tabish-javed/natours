@@ -12,10 +12,16 @@ const router = express.Router({ mergeParams: true });
 // mergeParams above will combine "/" and /tour/278asd214/reviews to be handled in this route
 router.route('/')
     .get(reviewController.getAllReviews)
-    .post(authController.protect, authController.restrict('user'), reviewController.createReview);
+    .post(
+        authController.protect,
+        authController.restrict('user'),
+        reviewController.setTourUserIDs,
+        reviewController.createReview
+    );
 
 
 router.route('/:id')
+    .patch(reviewController.updateReview)
     .delete(reviewController.deleteReview);
 
 
