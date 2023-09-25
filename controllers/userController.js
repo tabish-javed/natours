@@ -19,6 +19,11 @@ function filterObject (object, ...allowedFields) {
 
 // ---- USERS CONTROLLERS ----
 
+function getMe (request, response, next) {
+    request.params.id = request.user.id;
+    next();
+}
+
 // when user update his/her data i.e. email etc.
 const updateMe = catchAsync(async function (request, response, next) {
     // 1- create error if user POSTed password data (if he/she tries to update password)
@@ -74,6 +79,7 @@ const updateUser = factory.updateOne(User);
 const deleteUser = factory.deleteOne(User);
 
 export default {
+    getMe,
     updateMe,
     deactivateMe,
     createUser,
