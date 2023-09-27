@@ -10,10 +10,12 @@ const router = express.Router({ mergeParams: true });
 
 // request to any of the endpoints above will be handled here ----
 // mergeParams above will combine "/" and /tour/278asd214/reviews to be handled in this route
+
+router.use(authController.protect);
+
 router.route('/')
     .get(reviewController.getAllReviews)
     .post(
-        authController.protect,
         authController.restrict('user'),
         reviewController.setTourUserIDs,
         reviewController.createReview
@@ -22,8 +24,8 @@ router.route('/')
 
 router.route('/:id')
     .get(reviewController.getReview)
-    .patch(reviewController.updateReview)
-    .delete(reviewController.deleteReview);
+    .patch(authController.restrict('user', 'admin'), reviewController.updateReview)
+    .delete(authController.restrict('user', 'admin'), reviewController.deleteReview);
 
 
 export default router;

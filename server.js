@@ -14,6 +14,14 @@ process.on('uncaughtException', error => {
     });
 });
 
+
+// Server Startup
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
+    console.log(`API server started on port: ${port}`);
+});
+
+
 // mongoDB CONNECTION SETUP
 // create URL string to connect mongoose with.
 const DB_URL = process.env.DB_CONNECT_STRING
@@ -34,13 +42,6 @@ mongoose.connect(DB_URL)
             process.exit(1);
         });
     });
-
-
-// Server Startup
-const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-    console.log(`API server started on port: ${port}`);
-});
 
 
 process.on('unhandledRejection', error => {

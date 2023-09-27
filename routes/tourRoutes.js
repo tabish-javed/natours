@@ -20,16 +20,31 @@ router.use('/:tourID/reviews', reviewRouter);
 // alias route (aliasTopTour - middleware) to send top 5 cheap tours
 router.route('/top-5-cheap').get(tourController.aliasTopTour, tourController.getAllTours);
 router.route('/tour-stats').get(tourController.getTourStats);
-router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+
+router.route('/monthly-plan/:year')
+    .get(
+        authController.protect,
+        authController.restrict('admin', 'lead-guide'),
+        tourController.getMonthlyPlan
+    );
 
 router.route('/')
-    .get(authController.protect, tourController.getAllTours)
-    .post(tourController.createTour);
+    .get(tourController.getAllTours)
+    .post(
+        authController.protect,
+        authController.restrict('admin', 'lead-guide'),
+        tourController.createTour
+    );
 
 router.route('/:id')
     .get(tourController.getTour)
-    .patch(tourController.updateTour)
-    .delete(authController.protect,
+    .patch(
+        authController.protect,
+        authController.restrict('admin', 'lead-guide'),
+        tourController.updateTour
+    )
+    .delete(
+        authController.protect,
         authController.restrict('admin', 'lead-guide'),
         tourController.deleteTour
     );
