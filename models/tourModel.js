@@ -124,6 +124,10 @@ tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7;
 });
 
+// create index on database for a particular field OR combine multiple fields
+// tourSchema.index({ price: 1 });
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
 
 // VIRTUAL POPULATE - using to avoid child referencing embedded in a list in tour document
 tourSchema.virtual('reviews', {
