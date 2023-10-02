@@ -41,6 +41,7 @@ reviewSchema.pre(/^find/, function (next) {
 });
 
 
+// static method on schema, can be called on Model/Document
 reviewSchema.statics.calcAverageRatings = async function (tourID) {
     // "this" points to current model
     const stats = await this.aggregate([
@@ -56,11 +57,17 @@ reviewSchema.statics.calcAverageRatings = async function (tourID) {
         }
     ]);
 
-    await Tour.findByIdAndUpdate(tourID, {
-        ratingsQuantity: stats[0].nRating,
-        ratingsAverage: stats[0].avgRating
-    });
-
+    if (stats.length > 0) {
+        await Tour.findByIdAndUpdate(tourID, {
+            ratingsQuantity: stats[0].nRating,
+            ratingsAverage: stats[0].avgRating
+        });
+    } else {
+        await Tour.findByIdAndUpdate(tourID, {
+            ratingsQuantity: 0,
+            ratingsAverage: 4.5
+        });
+    }
 };
 
 
@@ -69,6 +76,19 @@ reviewSchema.post('save', function () {
     // "this.constructor" points to current model who created the document
     // (we can't use Review as it's not yet declared)
     this.constructor.calcAverageRatings(this.tour);
+});
+
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+    // attach document/review retrieved to the query as a property
+    this.r = await this.clone().findOne();
+    next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+    // receive attached document/review here after "pre" executed and
+    // call calcAverageRatings static method on the document model
+    await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 
 
