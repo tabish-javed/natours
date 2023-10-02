@@ -79,12 +79,13 @@ reviewSchema.post('save', function () {
 });
 
 
+// query hooks, works for "findOneAndUpdate" & "findOneAndDelete" operations
 reviewSchema.pre(/^findOneAnd/, async function (next) {
     // attach document/review retrieved to the query as a property
     this.r = await this.clone().findOne();
     next();
 });
-
+// query hooks, works for "findOneAndUpdate" & "findOneAndDelete" operations
 reviewSchema.post(/^findOneAnd/, async function () {
     // receive attached document/review here after "pre" executed and
     // call calcAverageRatings static method on the document model
