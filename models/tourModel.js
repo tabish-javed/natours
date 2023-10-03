@@ -38,7 +38,9 @@ const tourSchema = new mongoose.Schema({
         default: 4.5,
         // validators
         min: [1, 'Rating must be 1 or above'],
-        max: [5, 'Rating must be 5 or less']
+        max: [5, 'Rating must be 5 or less'],
+        // set receives a function to change value before it is saved
+        set: value => Math.round(value * 10) / 10
     },
     ratingsQuantity: {
         type: Number,
@@ -190,7 +192,6 @@ tourSchema.pre('aggregate', function (next) {
     // console.log(this.pipeline());
     next();
 });
-
 
 
 // create model from above document schema to be used to find/aggregate etc.

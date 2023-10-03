@@ -31,6 +31,10 @@ const reviewSchema = new mongoose.Schema({
 });
 
 
+// preventing duplicate review
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
+
 reviewSchema.pre(/^find/, function (next) {
     // "this" points to the current query
     this.populate({
