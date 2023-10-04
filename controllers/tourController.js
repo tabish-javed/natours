@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import AppError from '../utils/appError.js';
 import Tour from './../models/tourModel.js';
 // import APIFeatures from './../utils/apiFeatures.js';
 // import AppError from '../utils/appError.js';
@@ -117,6 +118,28 @@ const getMonthlyPlan = catchAsync(async (request, response, next) => {
 });
 
 
+// /tours-within/:distance/center/:latlng/unit/:unit
+// /tours-within/233/center/34.111745,-118.113491/unit/mi
+const getToursWithin = catchAsync(async function (request, response, next) {
+    const { distance, latlng, unit } = request.params;
+    const [lat, lng] = latlng.split(',');
+
+    const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+    if (!lat || !lng) {
+        next(new AppError('Please provide latlng in the required format: lat,lng', 400));
+    }
+
+    const tours = await Tour.find({ startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } } });
+
+    response.status(200).json({
+        status: 'success',
+        results: tours.length,
+        data: tours
+    });
+});
+
+
 export default {
     aliasTopTour,
     getAllTours,
@@ -125,5 +148,6 @@ export default {
     updateTour,
     deleteTour,
     getTourStats,
-    getMonthlyPlan
+    getMonthlyPlan,
+    getToursWithin
 };
