@@ -5,6 +5,8 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import AppError from './utils/appError.js';
 import errorController from './controllers/errorController.js';
@@ -15,7 +17,20 @@ import reviewRouter from './routes/reviewRoutes.js';
 
 const app = express();
 
-// GLOBAL MIDDLEWARES
+// creating "__dirname" variable (unavailable by default in ES6 module system)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// setting up pug as view engine (method path.join() inserts "/" between directory and file)
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
+// GLOBAL MIDDLEWARES ----
+
+// global middleware - serves public static files
+// app.use(express.static(`${__dirname}/public`));  <--- TO BE REMOVED
+app.use(express.static(path.join(__dirname, 'public')));
+
 // global middleware for setting up security HTTP headers
 app.use(helmet());
 
@@ -45,10 +60,6 @@ app.use(mongoSanitize());   // <-- external library for data sanitization
 app.use(xss());
 
 
-// global middleware - serves public files
-app.use(express.static('./public'));
-
-
 // global test middleware - adding time to the request object
 app.use((request, response, next) => {
     mongoose.sanitizeFilter(request.body);  // <-- mongoDB's internal method for data sanitization
@@ -56,6 +67,11 @@ app.use((request, response, next) => {
     next();
 });
 
+// ROUTES
+
+app.get('/', (request, response) => {
+    response.status(200).render('base');
+});
 
 // middleware to send request accordingly to desired routers
 app.use('/api/v1/tours', tourRouter);
