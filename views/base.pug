@@ -1,1 +1,19 @@
-h1 The Park Camper
+doctype doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Natours | #{tour}
+        link(rel="stylesheet", href="css/style.css")
+        link(rel="shortcut icon", href="img/favicon.png", type="image/png")
+
+    body
+        h1=tour
+        h2=user.toUpperCase()
+        //- h1 The Park Camper
+
+        - const x = 9
+
+        h2=2 * x
+
+        p This is just some text

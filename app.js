@@ -70,7 +70,11 @@ app.use((request, response, next) => {
 // ROUTES
 
 app.get('/', (request, response) => {
-    response.status(200).render('base');
+    response.set("Content-Security-Policy", "default-src 'self'");
+    response.status(200).render('base', {
+        tour: 'The Forest Hiker',
+        user: 'Tab'
+    });
 });
 
 // middleware to send request accordingly to desired routers
