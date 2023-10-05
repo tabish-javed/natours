@@ -13,6 +13,7 @@ import errorController from './controllers/errorController.js';
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
+import viewRouter from './routes/viewRoutes.js';
 
 
 const app = express();
@@ -69,15 +70,8 @@ app.use((request, response, next) => {
 
 // ROUTES
 
-app.get('/', (request, response) => {
-    response.set("Content-Security-Policy", "default-src 'self'");
-    response.status(200).render('base', {
-        tour: 'The Forest Hiker',
-        user: 'Tab'
-    });
-});
-
 // middleware to send request accordingly to desired routers
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);

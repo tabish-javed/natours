@@ -6,7 +6,7 @@ html(lang="en")
         link(rel="stylesheet", href="css/style.css")
         link(rel="shortcut icon", href="img/favicon.png", type="image/png")
         link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:300,300i,700")
-        title Natours | Exciting tours for adventurous people
+        title Natours | #{title}
 
     body
         // HEADER
@@ -15,8 +15,8 @@ html(lang="en")
 
         // CONTENT
 
-        section.overview
-            h1=tour
+        block content
+            h1 This is a placeholder heading
 
         // FOOTER
 
