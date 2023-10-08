@@ -7,6 +7,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
 import AppError from './utils/appError.js';
 import errorController from './controllers/errorController.js';
@@ -15,6 +16,7 @@ import userRouter from './routes/userRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
 import viewRouter from './routes/viewRoutes.js';
 
+dotenv.config({ path: './config.env' });
 
 const app = express();
 
