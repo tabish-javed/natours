@@ -29,7 +29,10 @@ const points = locations.map((loc) => {
     return [loc.coordinates[1], loc.coordinates[0]];
 });
 
-const bounds = L.latLngBounds(points).pad(0.9);
+const bounds = L.latLngBounds(points).pad(0.5);
 map.fitBounds(bounds);
+map.flyToBounds(points, {
+    duration: 3
+});
 
 map.scrollWheelZoom.disable();  //to disable zoom by mouse wheel
