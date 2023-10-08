@@ -3,7 +3,7 @@
 const locations = JSON.parse(document.getElementById('map').dataset.locations);
 
 
-let map = L.map('map', { zoomControl: false, dragging: false });  //to disable + - zoom
+let map = L.map('map', { zoomControl: false, dragging: true });  //to disable + - zoom
 // var map = L.map('map', { zoomControl: false }).setView([31.111745, -118.113491], );
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -30,9 +30,6 @@ const points = locations.map((loc) => {
 });
 
 const bounds = L.latLngBounds(points).pad(0.5);
-map.fitBounds(bounds);
-map.flyToBounds(points, {
-    duration: 3
-});
+map.fitBounds(bounds).flyToBounds(points, { duration: 1 });
 
 map.scrollWheelZoom.disable();  //to disable zoom by mouse wheel
