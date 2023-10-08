@@ -33,12 +33,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // global middleware for setting up security HTTP headers
-app.use(helmet());
+if (process.env.NODE_ENV === 'production') app.use(helmet());
 
 // third-party middleware to enable logging (only in development environment)
-if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
-}
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 // global middleware - to limit number of request from specific IP
 const rateLimitOptions = {

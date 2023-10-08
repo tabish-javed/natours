@@ -1409,3 +1409,8 @@ body {
     /* Chrome/Safari/Webkit */
     width: 0px;
 }
+
+/* INCREASE FONT SIZE - Edited by TAB */
+.leaflet-popup-content p {
+    font-size: 1.5rem;
+}
