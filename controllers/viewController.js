@@ -30,7 +30,7 @@ const getTour = catchAsync(async function (request, response) {
 
     // 3- render template using data from 1
     response.status(200).render('tour', {
-        title: 'The Forest Hiker Tour',
+        title: `${tour.name} Tour`,
         tour: tour
     });
 });

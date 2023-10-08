@@ -2,6 +2,11 @@ extends base
 
 include _reviewCard
 
+block append head
+    //- this line will pe appended in head section of the "base.pug"
+    //- using type=module calls this script after the page loads
+    script(type="module", src='/js/mapbox.js')
+
 mixin overviewBox(label, text, icon)
     .overview-box__detail
         svg.overview-box__icon
@@ -63,7 +68,8 @@ block content
             .picture-box
                 img.picture-box__img(src=`/img/tours/${image}`, alt=`The Park Camper Tour ${index + 1}`, class=`picture-box__img--${index + 1}`)
     section.section-map
-    #map
+        //- inject data in dataset variable here to be used by front end JavaScript
+        #map(data-locations=`${JSON.stringify(tour.locations)}`)
 
     section.section-reviews
         .reviews.disable-scrollbars
