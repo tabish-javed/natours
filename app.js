@@ -79,17 +79,6 @@ app.use('/api/v1/reviews', reviewRouter);
 
 // bottom middleware 2 - custom (handling all other URLs)
 app.all('*', function (request, response, next) {
-    // response.status(404).json({
-    //     status: 'failed',
-    //     message: `Can't find ${request.url} on this server!`
-    // });
-    // next();
-
-    // const error = new Error(`Can't find ${request.url} on this server!`);
-    // error.status = 'failed';
-    // error.statusCode = 404;
-    // next(error)
-
     next(new AppError(`Can't find ${request.url} on this server!`, 404));
 });
 

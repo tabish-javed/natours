@@ -37,7 +37,7 @@ const getTour = catchAsync(async function (request, response, next) {
 
 
 const getLoginForm = function (request, response) {
-
+    console.log(process.env);
     response.status(200).render('login', { title: 'Log into your account!' });
 };
 
