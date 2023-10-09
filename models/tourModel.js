@@ -176,17 +176,17 @@ tourSchema.pre(/^find/, function (next) {
 tourSchema.pre(/^find/, function (next) {
     // in pre, this points to query
     this.find({ secretTour: { $ne: true } });
-    this.start = Date.now();
+    // this.start = Date.now(); <- passes this.start to next hook, where it can be used
     next();
 });
 
 
 // find query hook - runs just after save() completed
-tourSchema.post(/^find/, function (docs, next) {
-    // in post, this points to document
-    console.log(`Query taken: ${Date.now() - this.start} milliseconds`);
-    next();
-});
+// tourSchema.post(/^find/, function (docs, next) {
+//     // in post, this points to document
+//     console.log(`Query taken: ${Date.now() - this.start} milliseconds`); <- receive this.start here
+//     next();
+// });
 
 
 // aggregation query hook - disable secret tours from aggregation (analysis)
