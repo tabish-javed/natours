@@ -108,7 +108,10 @@ const protect = catchAsync(async function (request, response, next) {
     let token;
     if (request.headers.authorization && request.headers.authorization.startsWith('Bearer')) {
         token = request.headers.authorization.split(' ')[1];
+    } else if (request.cookies.jwt) {
+        token = request.cookies.jwt;
     }
+
     if (!token) {
         return next(new AppError('You are not logged in! Please log in to get access.', 401));
     };

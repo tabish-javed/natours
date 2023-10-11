@@ -8,6 +8,7 @@ import xss from 'xss-clean';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 
 import AppError from './utils/appError.js';
 import errorController from './controllers/errorController.js';
@@ -50,7 +51,8 @@ app.use('/api', rateLimit(rateLimitOptions));
 
 
 // global middleware - to receive jason.parse()ed JS-Object from request's body (which is in JSON)
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '10kb' }));   // <- parses the data from body
+app.use(cookieParser());    // <- parses the data from cookie
 
 
 // global middleware - data sanitization against NoSQL query injection
