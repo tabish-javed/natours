@@ -9,14 +9,15 @@ async function login (email, password) {
             password: password
         });
 
-        if (response.status !== 'success') return;
-
-        setTimeout(() => {
-            window.location.replace('/');
-        }, 1_000);
+        if (response.status === 'success') {
+            alert('Logged in successfully!');
+            setTimeout(() => {
+                location.assign('/');
+            }, 1_000);
+        } else return;
 
     } catch (error) {
-        console.log(error);
+        alert(error);
     }
 }
 

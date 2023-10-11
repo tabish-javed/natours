@@ -56,7 +56,7 @@ app.use(cookieParser());    // <- parses the data from cookie
 
 
 // global middleware - data sanitization against NoSQL query injection
-app.use(mongoSanitize());   // <-- external library for data sanitization
+app.use(mongoSanitize());   // <- external library for data sanitization
 
 
 // global middleware - data sanitization against XSS

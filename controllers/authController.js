@@ -135,6 +135,32 @@ const protect = catchAsync(async function (request, response, next) {
 });
 
 
+// only for rendered pages without creating errors
+const isLoggedIn = catchAsync(async function (request, response, next) {
+    // 1 check if token exists in request
+    if (request.cookies.jwt) {
+        // 2 verify token
+        const decoded = await decodeToken(request.cookies.jwt);
+
+        // 3 check if user still exists
+        const currentUser = await User.findById(decoded.id);
+        if (!currentUser) {
+            return next();
+        }
+
+        // 4 check if user changed password after token was issued
+        if (currentUser.isPasswordChanged(decoded.iat)) {
+            return next();
+        }
+
+        // on all check above cleared, means user is logged in
+        response.locals.user = currentUser;
+        return next();
+    }
+    next();
+});
+
+
 const restrict = function (...roles) {
     return function (request, response, next) {
         // roles ['admin', 'lead-guide'] - role is now just "user"
@@ -234,6 +260,7 @@ export default {
     signUp,
     logIn,
     protect,
+    isLoggedIn,
     restrict,
     forgotPassword,
     resetPassword,
