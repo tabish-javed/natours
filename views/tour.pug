@@ -3,9 +3,6 @@ extends base
 include _reviewCard
 
 block append head
-    //- this line will pe appended in head section of the "base.pug"
-    //- using type=module calls this script after the page loads
-    script(type="module", src='/js/leafletMap.js')
 
     //- link to the leafletjs CDN for loading leaflet library online
     link(rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"

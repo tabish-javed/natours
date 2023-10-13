@@ -6,3 +6,5 @@ config.env
 .vscode/
 notes.md
 configHelmet.js
+.DS_Store
+.parcel-cache
