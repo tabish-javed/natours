@@ -3,10 +3,15 @@
     "version": "1.0.0",
     "description": "Building API using Node, Express and MongoDB",
     "main": "app.js",
+    "targets": {
+        "main": false
+    },
     "type": "module",
     "scripts": {
         "start-dev": "nodemon server.js",
-        "start-prd": "NODE_ENV=production nodemon server.js"
+        "start-prd": "NODE_ENV=production nodemon server.js",
+        "watch": "parcel serve ./public/js/index.js --dist-dir ./public/js/bundle",
+        "build": "parcel build ./public/js/index.js --dist-dir ./public/js/bundle"
     },
     "author": "tabish javed",
     "license": "ISC",

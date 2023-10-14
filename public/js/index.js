@@ -1,5 +1,5 @@
-import login from './login.js';
 import displayMap from './leafletMap.js';
+import login from './login.js';
 
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
