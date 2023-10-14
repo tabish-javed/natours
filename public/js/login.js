@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import helper from './helper.js';
+import { showAlert } from './alerts.js';
 
 
 async function login (email, password) {
@@ -10,14 +11,14 @@ async function login (email, password) {
         });
 
         if (response.status === 'success') {
-            alert('Logged in successfully!');
+            showAlert('success', 'Logged in successfully!');
             setTimeout(() => {
                 location.assign('/');
             }, 1_000);
         } else return;
 
     } catch (error) {
-        alert(error);
+        showAlert('error', error);
     }
 }
 
