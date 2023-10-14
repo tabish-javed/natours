@@ -103,6 +103,16 @@ const logIn = catchAsync(async function (request, response, next) {
 });
 
 
+const logOut = function (request, response, next) {
+    response.cookie('jwt', 'logged-out', {
+        expires: new Date(Date.now() + 10 * 1_000),
+        httpOnly: true
+    });
+
+    response.status(200).json({ status: 'success' });
+};
+
+
 const protect = catchAsync(async function (request, response, next) {
     // 1 check if token exists in request
     let token;
@@ -136,29 +146,33 @@ const protect = catchAsync(async function (request, response, next) {
 
 
 // only for rendered pages without creating errors
-const isLoggedIn = catchAsync(async function (request, response, next) {
+const isLoggedIn = async function (request, response, next) {
     // 1 check if token exists in request
     if (request.cookies.jwt) {
-        // 2 verify token
-        const decoded = await decodeToken(request.cookies.jwt);
+        try {
+            // 2 verify token
+            const decoded = await decodeToken(request.cookies.jwt);
 
-        // 3 check if user still exists
-        const currentUser = await User.findById(decoded.id);
-        if (!currentUser) {
+            // 3 check if user still exists
+            const currentUser = await User.findById(decoded.id);
+            if (!currentUser) {
+                return next();
+            }
+
+            // 4 check if user changed password after token was issued
+            if (currentUser.isPasswordChanged(decoded.iat)) {
+                return next();
+            }
+
+            // on all check above cleared, means user is logged in
+            response.locals.user = currentUser;
+            return next();
+        } catch (error) {
             return next();
         }
-
-        // 4 check if user changed password after token was issued
-        if (currentUser.isPasswordChanged(decoded.iat)) {
-            return next();
-        }
-
-        // on all check above cleared, means user is logged in
-        response.locals.user = currentUser;
-        return next();
     }
     next();
-});
+};
 
 
 const restrict = function (...roles) {
@@ -259,6 +273,7 @@ const updatePassword = catchAsync(async function (request, response, next) {
 export default {
     signUp,
     logIn,
+    logOut,
     protect,
     isLoggedIn,
     restrict,

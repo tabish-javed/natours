@@ -11,7 +11,7 @@ async function login (email, password) {
         });
 
         if (response.status === 'success') {
-            showAlert('success', 'Logged in successfully!');
+            showAlert('success', 'Logged In successfully!');
             setTimeout(() => {
                 location.assign('/');
             }, 1_000);
@@ -23,4 +23,21 @@ async function login (email, password) {
 }
 
 
-export default login;
+async function logout () {
+    try {
+        const response = await helper.AJAX('http://localhost:3000/api/v1/users/logout');
+
+        if (response.status === 'success') {
+            showAlert('success', 'Logged Out successfully!');
+            setTimeout(() => {
+                location.reload(true);
+            }, 1_000);
+        }
+
+    } catch (error) {
+        showAlert('error', "Error logging out! please try again.");
+    }
+}
+
+
+export { login, logout };

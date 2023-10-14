@@ -1,9 +1,10 @@
 import displayMap from './leafletMap.js';
-import login from './login.js';
+import { login, logout } from './login.js';
 
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form');
+const logoutButton = document.querySelector('.nav__el--logout');
 
 // DELEGATION
 if (mapBox) {
@@ -21,3 +22,5 @@ if (loginForm) {
         login(email, password);
     });
 }
+
+if (logoutButton) logoutButton.addEventListener('click', logout);
