@@ -1,6 +1,6 @@
 import Tour from '../models/tourModel.js';
 import catchAsync from '../utils/catchAsync.js';
-
+import AppError from '../utils/appError.js';
 
 const getOverview = catchAsync(async function (request, response) {
     // response.set("Content-Security-Policy", "default-src 'self'");
@@ -25,9 +25,11 @@ const getTour = catchAsync(async function (request, response, next) {
         fields: 'review rating user'
     });
 
+    if (!tour) {
+        return next(new AppError('There is no tour with that name.', 404));
+    }
+
     // 2- build template
-
-
     // 3- render template using data from 1
     response.status(200).render('tour', {
         title: `${tour.name} Tour`,
@@ -37,7 +39,6 @@ const getTour = catchAsync(async function (request, response, next) {
 
 
 const getLoginForm = function (request, response) {
-
     response.status(200).render('login', { title: 'Log into your account!' });
 };
 
