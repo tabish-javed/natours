@@ -141,6 +141,7 @@ const protect = catchAsync(async function (request, response, next) {
     // AND send user object along with request to next route
     // which is in this case is "restrict" route
     request.user = currentUser;
+    response.locals.user = currentUser;
     next();
 });
 

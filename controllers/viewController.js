@@ -43,8 +43,14 @@ const getLoginForm = function (request, response) {
 };
 
 
+const getAccount = function (request, response) {
+    response.status(200).render('account', { title: 'Your account' });
+};
+
+
 export default {
     getOverview,
     getTour,
-    getLoginForm
+    getLoginForm,
+    getAccount
 };
