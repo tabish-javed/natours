@@ -104,11 +104,13 @@ const logIn = catchAsync(async function (request, response, next) {
 
 
 const logOut = function (request, response, next) {
-    response.cookie('jwt', 'logged-out', {
-        expires: new Date(Date.now() + 10 * 1_000),
-        httpOnly: true
-    });
+    // response.cookie('jwt', 'logged-out', {
+    //     expires: new Date(Date.now() + 10 * 1_000),
+    //     httpOnly: true
+    // });
 
+    // Correct way of resetting cookie while above method is a hacky way of changing cookie
+    response.clearCookie('jwt');
     response.status(200).json({ status: 'success' });
 };
 
