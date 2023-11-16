@@ -17,18 +17,19 @@ function timeout (seconds) {
 /** Helper function to be used to run fetch method on post or get request
  * @param {*} url URL to send request to
  * @param {*} uploadData data to be send to API (on post request)
+ * @param {*} method method to be used for the API call, default is POST
  * @returns data received from API endpoint
  */
-async function AJAX (url, uploadData = undefined) {
+async function AJAX (url, uploadData = undefined, method = 'POST') {
     try {
         const requestPromise = uploadData
             ? fetch(url, {
-                method: 'post',
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(uploadData)
             })
             : fetch(url, {
-                method: 'get'
+                method: 'GET'
             });
 
         const response = await Promise.race([requestPromise, timeout(REQUEST_TIMEOUT)]);

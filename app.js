@@ -50,9 +50,13 @@ const rateLimitOptions = {
 app.use('/api', rateLimit(rateLimitOptions));
 
 
-// global middleware - to receive jason.parse()ed JS-Object from request's body (which is in JSON)
-app.use(express.json({ limit: '10kb' }));   // <- parses the data from body
-app.use(cookieParser());    // <- parses the data from cookie
+// global middlewares
+// - to receive jason.parse()ed JS - Object from request's body (which is in JSON);
+app.use(express.json({ limit: '10kb' }));   // <- parses data from body
+// - to receive data sent by client over URL in query string
+app.use(express.urlencoded({ extended: true, limit: '10kb' })); // <- parses data from URL
+// - to receive data sent by client inside the cookie
+app.use(cookieParser());    // <- parses data from cookie
 
 
 // global middleware - data sanitization against NoSQL query injection

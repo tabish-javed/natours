@@ -10,5 +10,8 @@ router.get('/tour/:slug', authController.isLoggedIn, viewController.getTour);
 router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
 router.get('/me', authController.protect, viewController.getAccount);
 
+// this route support update user data without API call (default POST on form submit)
+router.post('/submit-user-data', authController.protect, viewController.updateUserData);
+
 
 export default router;

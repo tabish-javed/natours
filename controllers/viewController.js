@@ -1,4 +1,5 @@
 import Tour from '../models/tourModel.js';
+import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
@@ -47,10 +48,25 @@ const getAccount = function (request, response) {
     response.status(200).render('account', { title: 'Your account' });
 };
 
+// this handler function support update user data without API call
+// (when using form's default POST on submit)
+const updateUserData = catchAsync(async function (request, response) {
+    const updatedUser = await User.findByIdAndUpdate(request.user.id, {
+        name: request.body.name,
+        email: request.body.email
+    },
+        {
+            new: true,
+            runValidators: true
+        });
+    response.status(200).render('account', { title: 'Your account', user: updatedUser });
+});
+
 
 export default {
     getOverview,
     getTour,
     getLoginForm,
-    getAccount
+    getAccount,
+    updateUserData
 };
