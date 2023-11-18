@@ -1,7 +1,29 @@
+import multer from 'multer';
 import AppError from '../utils/appError.js';
 import User from './../models/userModel.js';
 import catchAsync from './../utils/catchAsync.js';
 import factory from './handlerFactory.js';
+
+
+// multer setup
+const multerStorage = multer.diskStorage({
+    destination: (request, file, cb) => {
+        cb(null, 'public/img/users');
+    },
+    filename: (request, file, cb) => {
+        const ext = file.mimetype.split('/')[1];
+        cb(null, `user-${request.user.id}-${Date.now()}.${ext}`);
+    }
+});
+
+const multerFilter = (request, file, cb) => {
+    if (file.mimetype.startsWith('image')) cb(null, true);
+    else cb(new AppError('Not an image!, please upload only images.', 400), false);
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+// uploadUserPhoto is now a middleware to be called in userRoutes
+const uploadUserPhoto = upload.single('photo');
 
 
 // utility functions
@@ -26,6 +48,9 @@ function getMe (request, response, next) {
 
 // when user update his/her data i.e. email etc.
 const updateMe = catchAsync(async function (request, response, next) {
+    console.log(request.file);
+    console.log(request.body);
+
     // 1- create error if user POSTed password data (if he/she tries to update password)
     if (request.body.password || request.body.passwordConfirm) {
         return next(new AppError('This route is not for password update. Please use /updatePassword', 400));
@@ -79,6 +104,7 @@ const updateUser = factory.updateOne(User);
 const deleteUser = factory.deleteOne(User);
 
 export default {
+    uploadUserPhoto,
     getMe,
     updateMe,
     deactivateMe,
