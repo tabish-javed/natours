@@ -48,9 +48,6 @@ function getMe (request, response, next) {
 
 // when user update his/her data i.e. email etc.
 const updateMe = catchAsync(async function (request, response, next) {
-    console.log(request.file);
-    console.log(request.body);
-
     // 1- create error if user POSTed password data (if he/she tries to update password)
     if (request.body.password || request.body.passwordConfirm) {
         return next(new AppError('This route is not for password update. Please use /updatePassword', 400));
@@ -59,6 +56,7 @@ const updateMe = catchAsync(async function (request, response, next) {
     // 2- filter user object fields which shouldn't be saved, in other words;
     // specify only the fields which are supposed to be updated.
     const filteredBody = filterObject(request.body, 'name', 'email');
+    if (request.file) filteredBody.photo = request.file.filename;
 
     // 3- update user document
     const updatedUser = await User.findByIdAndUpdate(request.user.id, filteredBody, {

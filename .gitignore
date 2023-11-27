@@ -9,3 +9,4 @@ configHelmet.js
 .DS_Store
 .parcel-cache
 public/js/bundle
+public/img/users
