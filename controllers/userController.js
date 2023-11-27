@@ -1,4 +1,5 @@
 import multer from 'multer';
+import sharp from 'sharp';
 import AppError from '../utils/appError.js';
 import User from './../models/userModel.js';
 import catchAsync from './../utils/catchAsync.js';
@@ -6,15 +7,17 @@ import factory from './handlerFactory.js';
 
 
 // multer setup
-const multerStorage = multer.diskStorage({
-    destination: (request, file, cb) => {
-        cb(null, 'public/img/users');
-    },
-    filename: (request, file, cb) => {
-        const ext = file.mimetype.split('/')[1];
-        cb(null, `user-${request.user.id}-${Date.now()}.${ext}`);
-    }
-});
+// const multerStorage = multer.diskStorage({
+//     destination: (request, file, cb) => {
+//         cb(null, 'public/img/users');
+//     },
+//     filename: (request, file, cb) => {
+//         const ext = file.mimetype.split('/')[1];
+//         cb(null, `user-${request.user.id}-${Date.now()}.${ext}`);
+//     }
+// });
+
+const multerStorage = multer.memoryStorage();
 
 const multerFilter = (request, file, cb) => {
     if (file.mimetype.startsWith('image')) cb(null, true);
@@ -22,8 +25,24 @@ const multerFilter = (request, file, cb) => {
 };
 
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
 // uploadUserPhoto is now a middleware to be called in userRoutes
 const uploadUserPhoto = upload.single('photo');
+
+
+function resizeUserPhoto (request, response, next) {
+    if (!request.file) return next();
+
+    request.file.filename = `user-${request.user.id}-${Date.now()}.jpeg`;
+
+    sharp(request.file.buffer)
+        .resize(500, 500)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/users/${request.file.filename}`);
+
+    next();
+}
 
 
 // utility functions
@@ -103,6 +122,7 @@ const deleteUser = factory.deleteOne(User);
 
 export default {
     uploadUserPhoto,
+    resizeUserPhoto,
     getMe,
     updateMe,
     deactivateMe,
