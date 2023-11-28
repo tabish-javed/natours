@@ -6,17 +6,20 @@ import catchAsync from './../utils/catchAsync.js';
 import factory from './handlerFactory.js';
 
 
-// multer setup
-// const multerStorage = multer.diskStorage({
-//     destination: (request, file, cb) => {
-//         cb(null, 'public/img/users');
-//     },
-//     filename: (request, file, cb) => {
-//         const ext = file.mimetype.split('/')[1];
-//         cb(null, `user-${request.user.id}-${Date.now()}.${ext}`);
-//     }
-// });
+// MULTER SETUP
 
+/* // When saving image to disk
+    const multerStorage = multer.diskStorage({
+    destination: (request, file, cb) => {
+        cb(null, 'public/img/users');
+    },
+    filename: (request, file, cb) => {
+        const ext = file.mimetype.split('/')[1];
+        cb(null, `user-${request.user.id}-${Date.now()}.${ext}`);
+    }
+}); */
+
+// When saving image to memory buffer
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (request, file, cb) => {
