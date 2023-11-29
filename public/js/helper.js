@@ -25,8 +25,10 @@ async function AJAX (url, uploadData = undefined, method = 'POST') {
         const requestPromise = uploadData
             ? fetch(url, {
                 method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(uploadData)
+                // when using FormData object to be submitted, don't use "headers" & "JSON.stringify()"
+                // headers: { 'Content-Type': 'application/json' },
+                // body: JSON.stringify(uploadData)
+                body: uploadData
             })
             : fetch(url, {
                 method: 'GET'
