@@ -30,7 +30,7 @@ async function logout () {
         if (response.status === 'success') {
             showAlert('success', 'Logged Out successfully!');
             setTimeout(() => {
-                location.reload(true);
+                location.assign('/');
             }, 1_000);
         }
 

@@ -69,15 +69,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // delete the old photo when new photo is updated
-async function deletePhotoFromFS (photo) {
+async function deletePhotoFromStorage (photo) {
     if (photo.startsWith('default')) return;
-
-    // TODO - FIX the full path to be supplied
-    // ../public/img/users/user-6520533f63a9023864cb1f12-1701239738408.jpeg
     const path = `${__dirname}/../public/img/users/${photo}`;
     await fs.unlink(path, error => {
-        if (error) return console.log(error);
-        console.log('Previous Photo has been deleted');
+        if (error) return error;
     });
 }
 
@@ -102,7 +98,7 @@ const updateMe = catchAsync(async function (request, response, next) {
     if (request.file) filteredBody.photo = request.file.filename;
 
     // 3- if new photo is being updated then delete the old photo
-    if (request.file) await deletePhotoFromFS(request.user.photo);
+    if (request.file) await deletePhotoFromStorage(request.user.photo);
 
     // 4- update user document
     const updatedUser = await User.findByIdAndUpdate(request.user.id, filteredBody, {

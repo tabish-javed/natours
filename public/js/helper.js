@@ -22,17 +22,27 @@ function timeout (seconds) {
  */
 async function AJAX (url, uploadData = undefined, method = 'POST') {
     try {
-        const requestPromise = uploadData
-            ? fetch(url, {
+        let requestPromise;
+        if (uploadData && uploadData.constructor.name === 'FormData') {
+            requestPromise = fetch(url, {
                 method: method,
                 // when using FormData object to be submitted, don't use "headers" & "JSON.stringify()"
-                // headers: { 'Content-Type': 'application/json' },
-                // body: JSON.stringify(uploadData)
                 body: uploadData
-            })
-            : fetch(url, {
-                method: 'GET'
             });
+        }
+
+        if (uploadData && uploadData.constructor.name !== 'FormData') {
+            requestPromise = fetch(url, {
+                method: method,
+                // when using FormData object to be submitted, don't use "headers" & "JSON.stringify()"
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(uploadData)
+            });
+        }
+
+        if (!uploadData) {
+            requestPromise = fetch(url, { method: 'GET' });
+        }
 
         const response = await Promise.race([requestPromise, timeout(REQUEST_TIMEOUT)]);
         const data = await response.json();
