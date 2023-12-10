@@ -1,10 +1,34 @@
 /* eslint-disable no-unused-vars */
+import multer from 'multer';
+import sharp from 'sharp';
 import AppError from '../utils/appError.js';
 import Tour from './../models/tourModel.js';
 // import APIFeatures from './../utils/apiFeatures.js';
 // import AppError from '../utils/appError.js';
 import catchAsync from './../utils/catchAsync.js';
 import factory from './handlerFactory.js';
+
+// MULTER SETUP BELOW
+// When saving image to memory buffer
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (request, file, cb) => {
+    if (file.mimetype.startsWith('image')) cb(null, true);
+    else cb(new AppError('Not an image!, please upload only images.', 400), false);
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+// MULTER SETUP ABOVE
+
+const uploadTourImages = upload.fields([
+    { name: 'imageCover', maxCount: 1 },
+    { name: 'images', maxCount: 3 }
+]);
+
+function resizeTourImages (request, response, next) {
+    console.log(request.files);
+    next();
+}
 
 // CUSTOM MIDDLEWARE BELOW -----------------------------
 /**
@@ -182,6 +206,8 @@ export default {
     getTour,
     createTour,
     updateTour,
+    uploadTourImages,
+    resizeTourImages,
     deleteTour,
     getTourStats,
     getMonthlyPlan,
