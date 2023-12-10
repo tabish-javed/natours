@@ -23,7 +23,7 @@ function timeout (seconds) {
 async function AJAX (url, uploadData = undefined, method = 'POST') {
     try {
         let requestPromise;
-        if (uploadData && uploadData.constructor.name === 'FormData') {
+        if (uploadData && (uploadData instanceof FormData)) {
             requestPromise = fetch(url, {
                 method: method,
                 // when using FormData object to be submitted, don't use "headers" & "JSON.stringify()"
@@ -31,7 +31,7 @@ async function AJAX (url, uploadData = undefined, method = 'POST') {
             });
         }
 
-        if (uploadData && uploadData.constructor.name !== 'FormData') {
+        if (uploadData && !(uploadData instanceof FormData)) {
             requestPromise = fetch(url, {
                 method: method,
                 // when using FormData object to be submitted, don't use "headers" & "JSON.stringify()"
