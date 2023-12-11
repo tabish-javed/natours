@@ -1,5 +1,5 @@
 function displayMap (locations) {
-    let map = L.map('map', { zoomControl: false, dragging: true });  //to disable + - zoom
+    let map = L.map('map', { zoomControl: false, dragging: false });  //to disable + - zoom
     // var map = L.map('map', { zoomControl: false }).setView([31.111745, -118.113491], );
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -26,7 +26,7 @@ function displayMap (locations) {
     });
 
     const bounds = L.latLngBounds(points).pad(0.5);
-    map.fitBounds(bounds).flyToBounds(points, { duration: 1 });
+    map.fitBounds(bounds).flyToBounds(points, { duration: 3, maxZoom: 6 });
 
     map.scrollWheelZoom.disable();  //to disable zoom by mouse wheel
 }

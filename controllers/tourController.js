@@ -25,12 +25,38 @@ const uploadTourImages = upload.fields([
     { name: 'images', maxCount: 3 }
 ]);
 
-function resizeTourImages (request, response, next) {
-    console.log(request.files);
-    next();
-}
+const resizeTourImages = catchAsync(async (request, response, next) => {
 
-// CUSTOM MIDDLEWARE BELOW -----------------------------
+    if (!request.files.imageCover && !request.files.images) return next();
+
+    // 1 - cover image
+    if (request.files.imageCover) {
+        request.body.imageCover = `tour-${request.params.id}-${Date.now()}-cover.jpeg`;
+        await sharp(request.files.imageCover[0].buffer)
+            .resize(2100, 1400)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`public/img/tours/${request.body.imageCover}`);
+    }
+    // 2 -images
+    if (request.files.images) {
+        request.body.images = [];
+        await Promise.all(request.files.images.map(async (file, index) => {
+            const fileName = `tour-${request.params.id}-${Date.now()}-${index + 1}.jpeg`;
+
+            await sharp(file.buffer)
+                .resize(2100, 1400)
+                .toFormat('jpeg')
+                .jpeg({ quality: 90 })
+                .toFile(`public/img/tours/${fileName}`);
+
+            request.body.images.push(fileName);
+        }));
+    }
+    next();
+});
+
+// CUSTOM MIDDLEWARE BELOW ----------------------------- 
 /**
  * This middleware function modify query for fetching data when
  * request hits the route - '/top-5-cheap' then pass request to
