@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
-import sendEmail from '../utils/email.js';
+import Email from '../utils/email.js';
 
 /**
  * This function generate and returns "json web token".
@@ -65,18 +65,15 @@ const signUp = catchAsync(async function (request, response, next) {
     // do not send password to user
     newUser.password = undefined;
 
+    // create url
+    const url = `${request.protocol}://${request.get('host')}/me`;
+
+    // send email
+    await new Email(newUser, url).sendWelcome();
+
     // finally send response with token and user data
     await createSendToken(newUser, 201, response);
 
-    // CODE BELOW IS REPLACED BY createSendToken()
-    // const token = await signToken(newUser._id);
-    // response.status(201).json({
-    //     status: 'success',
-    //     token: token,
-    //     data: {
-    //         user: newUser
-    //     }
-    // });
 });
 
 
@@ -205,11 +202,11 @@ const forgotPassword = catchAsync(async function (request, response, next) {
     const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to:\n${resetURL} \n\nIf you didn't request this password reset, please ignore this email!`;
 
     try {
-        await sendEmail({
-            email: user.email,
-            subject: 'Your password reset token (valid only for 10 minutes',
-            message: message,
-        });
+        // await sendEmail({
+        //     email: user.email,
+        //     subject: 'Your password reset token (valid only for 10 minutes',
+        //     message: message,
+        // });
 
         response.status(200).json({
             status: 'success',

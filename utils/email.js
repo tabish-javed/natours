@@ -34,7 +34,7 @@ class Email {
 
     async send (template, subject) {
         // 1- render HTML based on a pug template
-        const html = pug.renderFile(`${__dirname}/../views/emails/${template}.pug`, {
+        const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
             firstName: this.firstName,
             url: this.url,
             subject: subject
@@ -46,7 +46,7 @@ class Email {
             to: this.to,
             subject: subject,
             html: html,
-            text: htmlToText.fromString(html),
+            text: htmlToText(html, { wordwrap: 120 }),
         };
 
         // 3- create a transport and send email
@@ -54,7 +54,7 @@ class Email {
     }
 
     async sendWelcome () {
-        await this.send('welcome', 'welcome to the Natours Family!');
+        await this.send('welcome', 'Welcome to the Natours Family!');
     }
 }
 
