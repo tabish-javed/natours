@@ -20,9 +20,7 @@ class Email {
         if (process.env.NODE_ENV === 'production') {
             // Yahoo Configured => To FIX ("There was an error sending the email. Try again later!")
             return nodemailer.createTransport({
-                host: process.env.PRD_EMAIL_HOST,
-                port: process.env.PRD_EMAIL_PORT,
-                secure: false,
+                service: 'hotmail',
                 auth: {
                     user: process.env.PRD_EMAIL_USERNAME,
                     pass: process.env.PRD_EMAIL_PASSWORD

@@ -4,7 +4,6 @@ import sharp from 'sharp';
 import AppError from '../utils/appError.js';
 import Tour from './../models/tourModel.js';
 // import APIFeatures from './../utils/apiFeatures.js';
-// import AppError from '../utils/appError.js';
 import catchAsync from './../utils/catchAsync.js';
 import factory from './handlerFactory.js';
 
