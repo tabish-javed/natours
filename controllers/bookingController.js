@@ -54,4 +54,18 @@ const createBookingCheckout = catchAsync(async (request, response, next) => {
 });
 
 
-export default { getCheckoutSession, createBookingCheckout };
+const createBooking = factory.createOne(Booking);
+const getBooking = factory.getOne(Booking);
+const getAllBooking = factory.getAll(Booking);
+const updateBooking = factory.updateOne(Booking);
+const deleteBooking = factory.deleteOne(Booking);
+
+export default {
+    getCheckoutSession,
+    createBookingCheckout,
+    createBooking,
+    getBooking,
+    getAllBooking,
+    updateBooking,
+    deleteBooking
+};
