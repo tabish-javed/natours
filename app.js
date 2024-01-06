@@ -9,6 +9,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 
 import AppError from './utils/appError.js';
 import errorController from './controllers/errorController.js';
@@ -66,6 +67,10 @@ app.use(mongoSanitize());   // <- external library for data sanitization
 
 // global middleware - data sanitization against XSS
 app.use(xss());
+
+
+// global middleware - compression
+app.use(compression());
 
 
 // global test middleware - adding time to the request object
