@@ -16,7 +16,6 @@ export async function bookTour (tourId) {
             sessionId: session.session.id
         });
     } catch (error) {
-        console.log(error);
         showAlert('error', error);
     }
 }
