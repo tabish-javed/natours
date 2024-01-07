@@ -23,6 +23,8 @@ dotenv.config({ path: './config.env' });
 
 const app = express();
 
+app.enable('trust proxy');
+
 // creating "__dirname" variable (unavailable by default in ES6 module system)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

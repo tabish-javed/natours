@@ -23,16 +23,17 @@ async function decodeToken (token) {
 }
 
 
-async function createSendToken (user, statusCode, response) {
+async function createSendToken (user, statusCode, request, response) {
     const token = await signToken(user._id);
     // set cookie options to be used to create cookie
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1_000),
-        httpOnly: true
+        httpOnly: true,
+        secure: request.secure || request.headers['x-forwarded-proto'] === 'https'
     };
 
     // depending on the app environment set secure property on the cookie
-    cookieOptions.secure = process.env.NODE_ENV === 'production' ? true : false;
+    // cookieOptions.secure = process.env.NODE_ENV === 'production' ? true : false; <- Moved this line in cookieOptions
 
     // add cookie in the response
     response.cookie('jwt', token, cookieOptions);
@@ -96,7 +97,7 @@ const logIn = catchAsync(async function (request, response, next) {
     await user.save({ validateModifiedOnly: true });
 
     // 4- if everything is ok, send token to client
-    await createSendToken(user, 200, response);
+    await createSendToken(user, 200, request, response);
 });
 
 
@@ -241,7 +242,7 @@ const resetPassword = catchAsync(async function (request, response, next) {
     // *step 3 was taken care by a pre hook on password save field in userModel
 
     // 4- log the user in and send JWT
-    await createSendToken(user, 200, response);
+    await createSendToken(user, 200, request, response);
 });
 
 
@@ -260,7 +261,7 @@ const updatePassword = catchAsync(async function (request, response, next) {
     await user.save();
 
     // 4- log the user in and send JWT
-    await createSendToken(user, 200, response);
+    await createSendToken(user, 200, request, response);
 });
 
 export default {

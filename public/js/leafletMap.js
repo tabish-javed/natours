@@ -26,7 +26,7 @@ function displayMap (locations) {
     });
 
     const bounds = L.latLngBounds(points).pad(0.5);
-    map.fitBounds(bounds).flyToBounds(points, { duration: 3, maxZoom: 6 });
+    map.fitBounds(bounds).flyToBounds(points, { duration: 2, maxZoom: 6.5 });
 
     map.scrollWheelZoom.disable();  //to disable zoom by mouse wheel
 }
