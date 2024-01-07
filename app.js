@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
+import cors from 'cors';
 
 import AppError from './utils/appError.js';
 import errorController from './controllers/errorController.js';
@@ -35,6 +36,21 @@ app.set('views', path.join(__dirname, 'views'));
 
 // GLOBAL MIDDLEWARES ----
 
+// global middleware - to enable, Cross Origin Resource Sharing.
+app.use(cors());
+// cors() returns a middleware which sets header = Access-Control-Allow-Origin to every request
+
+// for example; if we have our API at api.natours.com and frontend at natours.com,
+// then we allow natours.com to access API as in following code;
+// ---- <- EXAMPLE ->
+// app.use(cors({
+//     origin: 'https://www.natours.com'
+// }))
+// ----
+
+app.options('*', cors());
+// app.options('/api/v1/tours/:id', cors()) <- EXAMPLE
+
 // global middleware - serves public static files
 // app.use(express.static(`${__dirname}/public`));  <--- TO BE REMOVED
 app.use(express.static(path.join(__dirname, 'public')));
@@ -49,7 +65,10 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 const rateLimitOptions = {
     max: 100,
     windowMs: 60 * 60 * 1_000,
-    message: "Too many request from this IP, please try again in an hour!"
+    message: "Too many request from this IP, please try again in an hour!",
+    validate: { trustProxy: false },
+    // added "validate" property when "trust proxy" is enabled at LINE # 27
+    // to skip error by rate limiter when "trust proxy" is used.
 };
 app.use('/api', rateLimit(rateLimitOptions));
 
