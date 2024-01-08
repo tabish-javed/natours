@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
+import hpp from 'hpp';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
@@ -88,6 +89,10 @@ app.use(mongoSanitize());   // <- external library for data sanitization
 
 // global middleware - data sanitization against XSS
 app.use(xss());
+
+
+// global middleware - prevent parameter pollution
+app.use(hpp());
 
 
 // global middleware - compression
