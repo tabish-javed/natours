@@ -1,6 +1,6 @@
 import express from 'express';
-import reviewController from '../controllers/reviewController.js';
 import authController from '../controllers/authController.js';
+import reviewController from '../controllers/reviewController.js';
 
 // mergeParams option combines request which are sent by tourRouter
 const router = express.Router({ mergeParams: true });
@@ -14,18 +14,18 @@ const router = express.Router({ mergeParams: true });
 router.use(authController.protect);
 
 router.route('/')
-    .get(reviewController.getAllReviews)
-    .post(
-        authController.restrict('user'),
-        reviewController.setTourUserIDs,
-        reviewController.createReview
-    );
+  .get(reviewController.getAllReviews)
+  .post(
+    authController.restrict('user'),
+    reviewController.setTourUserIDs,
+    reviewController.createReview
+  );
 
 
 router.route('/:id')
-    .get(reviewController.getReview)
-    .patch(authController.restrict('user', 'admin'), reviewController.updateReview)
-    .delete(authController.restrict('user', 'admin'), reviewController.deleteReview);
+  .get(reviewController.getReview)
+  .patch(authController.restrict('user', 'admin'), reviewController.updateReview)
+  .delete(authController.restrict('user', 'admin'), reviewController.deleteReview);
 
 
 export default router;

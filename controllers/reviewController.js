@@ -4,10 +4,10 @@ import factory from './handlerFactory.js';
 
 
 function setTourUserIDs (request, response, next) {
-    // Allow nested routes
-    if (!request.body.tour) request.body.tour = request.params.tourID;
-    if (!request.body.user) request.body.user = request.user.id;
-    next();
+  // Allow nested routes
+  if (!request.body.tour) request.body.tour = request.params.tourID;
+  if (!request.body.user) request.body.user = request.user.id;
+  next();
 }
 
 
@@ -18,10 +18,10 @@ const updateReview = factory.updateOne(Review);
 const deleteReview = factory.deleteOne(Review);
 
 export default {
-    setTourUserIDs,
-    getAllReviews,
-    getReview,
-    createReview,
-    updateReview,
-    deleteReview
+  setTourUserIDs,
+  getAllReviews,
+  getReview,
+  createReview,
+  updateReview,
+  deleteReview
 };

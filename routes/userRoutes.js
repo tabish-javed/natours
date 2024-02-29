@@ -1,6 +1,6 @@
 import express from 'express';
-import userController from '../controllers/userController.js';
 import authController from '../controllers/authController.js';
+import userController from '../controllers/userController.js';
 
 
 const router = express.Router();
@@ -25,13 +25,13 @@ router.delete('/deleteMe', userController.deactivateMe);
 router.use(authController.restrict('admin'));
 
 router.route('/')
-    .get(userController.getAllUsers)
-    .post(userController.createUser);
+  .get(userController.getAllUsers)
+  .post(userController.createUser);
 
 router.route('/:id')
-    .get(userController.getUser)
-    .patch(userController.updateUser)
-    .delete(userController.deleteUser);
+  .get(userController.getUser)
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser);
 
 
 export default router;

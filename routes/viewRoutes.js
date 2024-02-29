@@ -1,7 +1,7 @@
 import express from 'express';
-import viewController from '../controllers/viewController.js';
 import authController from '../controllers/authController.js';
 import bookingController from '../controllers/bookingController.js';
+import viewController from '../controllers/viewController.js';
 
 const router = express.Router();
 

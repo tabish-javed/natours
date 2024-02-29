@@ -1,54 +1,54 @@
 {
-    "name": "natours_api",
-    "version": "1.0.0",
-    "description": "Building API using Node, Express and MongoDB",
-    "main": "app.js",
-    "targets": {
-        "main": false
-    },
-    "type": "module",
-    "scripts": {
-        "start-dev": "nodemon server.js",
-        "start": "NODE_ENV=production node server.js",
-        "watch": "parcel serve ./public/js/index.js --dist-dir ./public/js/bundle",
-        "build": "parcel build ./public/js/index.js --dist-dir ./public/js/bundle"
-    },
-    "author": "tabish javed",
-    "license": "ISC",
-    "dependencies": {
-        "bcryptjs": "^2.4.3",
-        "compression": "^1.7.4",
-        "cookie-parser": "^1.4.6",
-        "cors": "^2.8.5",
-        "dotenv": "^16.3.1",
-        "express": "^4.18.2",
-        "express-mongo-sanitize": "^2.2.0",
-        "express-rate-limit": "^7.0.1",
-        "helmet": "^7.0.0",
-        "hpp": "^0.2.3",
-        "html-to-text": "^9.0.5",
-        "jsonwebtoken": "^9.0.2",
-        "mongoose": "^8.0.3",
-        "morgan": "^1.10.0",
-        "multer": "^1.4.5-lts.1",
-        "nodemailer": "^6.9.5",
-        "pug": "^3.0.2",
-        "sharp": "^0.33.1",
-        "slugify": "^1.6.6",
-        "stripe": "^14.10.0",
-        "upgrade-node-modules": "^1.2.1",
-        "validator": "^13.11.0",
-        "xss-clean": "^0.1.4"
-    },
-    "devDependencies": {
-        "@types/express": "^4.17.17",
-        "@types/node": "^20.6.3",
-        "eslint": "^8.48.0",
-        "eslint-plugin-node": "^11.1.0",
-        "nodemon": "^3.0.1",
-        "parcel": "^2.10.0"
-    },
-    "engines": {
-        "node": "^18.0.0"
-    }
+  "name": "natours_api",
+  "version": "1.0.0",
+  "description": "Building API using Node, Express and MongoDB",
+  "main": "app.js",
+  "targets": {
+    "main": false
+  },
+  "type": "module",
+  "scripts": {
+    "start-dev": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
+    "watch": "parcel serve ./public/js/index.js --dist-dir ./public/js/bundle",
+    "build": "parcel build ./public/js/index.js --dist-dir ./public/js/bundle"
+  },
+  "author": "tabish javed",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.0.1",
+    "helmet": "^7.0.0",
+    "hpp": "^0.2.3",
+    "html-to-text": "^9.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.5",
+    "pug": "^3.0.2",
+    "sharp": "^0.33.1",
+    "slugify": "^1.6.6",
+    "stripe": "^14.10.0",
+    "upgrade-node-modules": "^1.2.1",
+    "validator": "^13.11.0",
+    "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.6.3",
+    "eslint": "^8.48.0",
+    "eslint-plugin-node": "^11.1.0",
+    "nodemon": "^3.0.1",
+    "parcel": "^2.10.0"
+  },
+  "engines": {
+    "node": "^18.0.0"
+  }
 }

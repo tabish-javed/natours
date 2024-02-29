@@ -1,6 +1,6 @@
 import express from 'express';
-import tourController from '../controllers/tourController.js';
 import authController from '../controllers/authController.js';
+import tourController from '../controllers/tourController.js';
 import reviewRouter from '../routes/reviewRoutes.js';
 
 
@@ -22,42 +22,42 @@ router.route('/top-5-cheap').get(tourController.aliasTopTour, tourController.get
 router.route('/tour-stats').get(tourController.getTourStats);
 
 router.route('/monthly-plan/:year')
-    .get(
-        authController.protect,
-        authController.restrict('admin', 'lead-guide'),
-        tourController.getMonthlyPlan
-    );
+  .get(
+    authController.protect,
+    authController.restrict('admin', 'lead-guide'),
+    tourController.getMonthlyPlan
+  );
 
 
 router.route('/tours-within/:distance/center/:latlng/unit/:unit')
-    .get(tourController.getToursWithin);
+  .get(tourController.getToursWithin);
 
 
 router.route('/distances/:latlng/unit/:unit')
-    .get(tourController.getDistances);
+  .get(tourController.getDistances);
 
 
 router.route('/')
-    .get(tourController.getAllTours)
-    .post(
-        authController.protect,
-        authController.restrict('admin', 'lead-guide'),
-        tourController.createTour
-    );
+  .get(tourController.getAllTours)
+  .post(
+    authController.protect,
+    authController.restrict('admin', 'lead-guide'),
+    tourController.createTour
+  );
 
 router.route('/:id')
-    .get(tourController.getTour)
-    .patch(
-        authController.protect,
-        authController.restrict('admin', 'lead-guide'),
-        tourController.uploadTourImages,
-        tourController.resizeTourImages,
-        tourController.updateTour
-    )
-    .delete(
-        authController.protect,
-        authController.restrict('admin', 'lead-guide'),
-        tourController.deleteTour
-    );
+  .get(tourController.getTour)
+  .patch(
+    authController.protect,
+    authController.restrict('admin', 'lead-guide'),
+    tourController.uploadTourImages,
+    tourController.resizeTourImages,
+    tourController.updateTour
+  )
+  .delete(
+    authController.protect,
+    authController.restrict('admin', 'lead-guide'),
+    tourController.deleteTour
+  );
 
 export default router;

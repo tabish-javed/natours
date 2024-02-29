@@ -9,63 +9,63 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 class Email {
-    constructor(user, url) {
-        this.to = user.email;
-        this.firstName = user.name.split(' ')[0];
-        this.url = url;
-        this.from = `${process.env.EMAIL_SENDER} ${process.env.EMAIL_FROM}`;
-    }
+  constructor(user, url) {
+    this.to = user.email;
+    this.firstName = user.name.split(' ')[0];
+    this.url = url;
+    this.from = `${process.env.EMAIL_SENDER} ${process.env.EMAIL_FROM}`;
+  }
 
-    makeTransport () {
-        if (process.env.NODE_ENV === 'production') {
-            // Yahoo Configured => To FIX ("There was an error sending the email. Try again later!")
-            return nodemailer.createTransport({
-                service: 'hotmail',
-                auth: {
-                    user: process.env.PRD_EMAIL_USERNAME,
-                    pass: process.env.PRD_EMAIL_PASSWORD
-                }
-            });
+  makeTransport () {
+    if (process.env.NODE_ENV === 'production') {
+      // Yahoo Configured => To FIX ("There was an error sending the email. Try again later!")
+      return nodemailer.createTransport({
+        service: 'hotmail',
+        auth: {
+          user: process.env.PRD_EMAIL_USERNAME,
+          pass: process.env.PRD_EMAIL_PASSWORD
         }
-
-        return nodemailer.createTransport({
-            host: process.env.EMAIL_HOST,
-            port: process.env.EMAIL_PORT,
-            auth: {
-                user: process.env.EMAIL_USERNAME,
-                pass: process.env.EMAIL_PASSWORD
-            }
-        });
+      });
     }
 
-    async send (template, subject) {
-        // 1- render HTML based on a pug template
-        const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
-            firstName: this.firstName,
-            url: this.url,
-            subject: subject
-        });
+    return nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+  }
 
-        // 2- define email options
-        const mailOptions = {
-            from: this.from,
-            to: this.to,
-            subject: subject,
-            html: html,
-            text: htmlToText(html, { wordwrap: 120 }),
-        };
+  async send (template, subject) {
+    // 1- render HTML based on a pug template
+    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
+      firstName: this.firstName,
+      url: this.url,
+      subject: subject
+    });
 
-        // 3- create a transport and send email
-        await this.makeTransport().sendMail(mailOptions);
-    }
+    // 2- define email options
+    const mailOptions = {
+      from: this.from,
+      to: this.to,
+      subject: subject,
+      html: html,
+      text: htmlToText(html, { wordwrap: 120 }),
+    };
 
-    async sendWelcome () {
-        await this.send('welcome', 'Welcome to the Natours Family!');
-    }
+    // 3- create a transport and send email
+    await this.makeTransport().sendMail(mailOptions);
+  }
 
-    async sendPasswordReset () {
-        await this.send('passwordReset', 'Your password reset token (valid only for 10 minutes)');
-    }
+  async sendWelcome () {
+    await this.send('welcome', 'Welcome to the Natours Family!');
+  }
+
+  async sendPasswordReset () {
+    await this.send('passwordReset', 'Your password reset token (valid only for 10 minutes)');
+  }
 }
 
 

@@ -64,12 +64,12 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 // global middleware - to limit number of request from specific IP
 const rateLimitOptions = {
-    max: 100,
-    windowMs: 60 * 60 * 1_000,
-    message: "Too many request from this IP, please try again in an hour!",
-    validate: { trustProxy: false },
-    // added "validate" property when "trust proxy" is enabled at LINE # 27
-    // to skip error by rate limiter when "trust proxy" is used.
+  max: 100,
+  windowMs: 60 * 60 * 1_000,
+  message: "Too many request from this IP, please try again in an hour!",
+  validate: { trustProxy: false },
+  // added "validate" property when "trust proxy" is enabled at LINE # 27
+  // to skip error by rate limiter when "trust proxy" is used.
 };
 app.use('/api', rateLimit(rateLimitOptions));
 
@@ -101,9 +101,9 @@ app.use(compression());
 
 // global test middleware - adding time to the request object
 app.use((request, response, next) => {
-    mongoose.sanitizeFilter(request.body);  // <-- mongoDB's internal method for data sanitization
-    request.requestTime = new Date().toISOString();
-    next();
+  mongoose.sanitizeFilter(request.body);  // <-- mongoDB's internal method for data sanitization
+  request.requestTime = new Date().toISOString();
+  next();
 });
 
 // ROUTES
@@ -118,7 +118,7 @@ app.use('/api/v1/bookings', bookingRouter);
 
 // bottom middleware 2 - custom (handling all other URLs)
 app.all('*', function (request, response, next) {
-    next(new AppError(`Can't find ${request.url} on this server!`, 404));
+  next(new AppError(`Can't find ${request.url} on this server!`, 404));
 });
 
 
